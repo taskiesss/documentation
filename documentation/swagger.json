@@ -1,0 +1,846 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Taskaya Project - APIs",
+    "description": "This document describes all APIs for the Taskaya Project. Currently, it includes schemas and endpoints for the Signup, Login, and Search processes. Additional APIs (e.g., Forgot Password) will be added in future updates.\n",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://localhost/",
+      "description": "Local development server"
+    }
+  ],
+  "paths": {
+    "/signup/create-account": {
+      "post": {
+        "tags": [
+          "Signup"
+        ],
+        "summary": "Register a new user",
+        "description": "Register a new user with username, email, password, and role.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignupRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User registered successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignupResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request (e.g., invalid input)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict (e.g., username or email already exists)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/signup/send-otp": {
+      "post": {
+        "tags": [
+          "Signup"
+        ],
+        "summary": "Send OTP to the user",
+        "description": "Generate and send an OTP to the user's email for verification.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignupRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OTP sent successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OTPResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/signup/verify": {
+      "post": {
+        "tags": [
+          "Signup"
+        ],
+        "summary": "Verify OTP",
+        "description": "Verify the OTP sent to the user's email.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyOTPRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OTP verified successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OTPResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid OTP",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": [
+          "Login"
+        ],
+        "summary": "Authenticate a user",
+        "description": "Authenticate a user with their email and password.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User authenticated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (e.g., invalid credentials)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/search/freelancers": {
+      "post": {
+        "tags": [
+          "Search"
+        ],
+        "summary": "Search for freelancers by skills, filters, and search term",
+        "description": "Search for freelancers based on their skills, additional filters (such as experience level, hourly rate, project length, hours per week, and rating), and a search term that matches names or titles.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchFreelancersRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Freelancers found successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FreelancerResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request (e.g., invalid input)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseSearch"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/search/communities": {
+      "post": {
+        "tags": [
+          "Search"
+        ],
+        "summary": "Search for communities by skills, filters, and search term",
+        "description": "Search for communities based on their skills, additional filters (such as experience level, hourly rate, project length, hours per week, and rating), and a search term that matches names or titles.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchCommunitiesRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Communities found successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CommunityResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request (e.g., invalid input)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseSearch"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/search/jobs": {
+      "post": {
+        "tags": [
+          "Search"
+        ],
+        "summary": "Search for jobs by skills, filters, and search term",
+        "description": "Search for jobs based on their required skills, additional filters (such as experience level, hourly rate, project length, hours per week, and rating), and a search term that matches titles.\nThe response should be an array of job objects.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchJobsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Jobs found successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/JobResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request (e.g., invalid input)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseSearch"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SignupRequest": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "john_doe"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "john.doe@example.com"
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "example": "SecurePassword123!"
+          },
+          "role": {
+            "type": "string",
+            "example": "user"
+          }
+        },
+        "required": [
+          "username",
+          "email",
+          "password",
+          "role"
+        ]
+      },
+      "VerifyOTPRequest": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "john_doe"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "john.doe@example.com"
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "example": "SecurePassword123!"
+          },
+          "role": {
+            "type": "string",
+            "example": "user"
+          },
+          "otp": {
+            "type": "string",
+            "example": "123456"
+          }
+        },
+        "required": [
+          "username",
+          "email",
+          "password",
+          "role",
+          "otp"
+        ]
+      },
+      "SignupResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "User registered successfully"
+          },
+          "userId": {
+            "type": "string",
+            "example": "12345"
+          }
+        }
+      },
+      "OTPResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "OTP sent successfully"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "example": "unknown"
+              },
+              "message": {
+                "type": "string",
+                "example": "An unexpected error occurred. Please try again later."
+              }
+            }
+          }
+        }
+      },
+      "LoginRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "john.doe@example.com"
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "example": "SecurePassword123!"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "LoginResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          }
+        }
+      },
+      "SearchFreelancersRequest": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": "string",
+            "example": "John",
+            "description": "A keyword or partial/full name to search for freelancers."
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "Python"
+            },
+            "nullable": true,
+            "example": [
+              "Python",
+              "JavaScript"
+            ]
+          },
+          "filters": {
+            "type": "object",
+            "properties": {
+              "experienceLevel": {
+                "type": "string",
+                "enum": [
+                  "entry_level",
+                  "intermediate",
+                  "expert"
+                ],
+                "example": "intermediate"
+              },
+              "hourlyRate": {
+                "type": "object",
+                "properties": {
+                  "min": {
+                    "type": "number",
+                    "example": 20
+                  },
+                  "max": {
+                    "type": "number",
+                    "example": 50
+                  }
+                }
+              },
+              "projectLength": {
+                "type": "string",
+                "enum": [
+                  "less_than_1_month",
+                  "1_to_3_months",
+                  "3_to_6_months",
+                  "more_than_6_months"
+                ],
+                "example": "1_to_3_months"
+              },
+              "hoursPerWeek": {
+                "type": "string",
+                "enum": [
+                  "less_than_30_hours",
+                  "more_than_30_hours"
+                ],
+                "example": "more_than_30_hours"
+              },
+              "rating": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 5,
+                "example": 4
+              }
+            }
+          }
+        }
+      },
+      "FreelancerResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "12345"
+          },
+          "name": {
+            "type": "string",
+            "example": "John Doe"
+          },
+          "title": {
+            "type": "string",
+            "example": "Senior Python Developer"
+          },
+          "description": {
+            "type": "string",
+            "example": "Experienced developer with expertise in Python and Django."
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "Python"
+            }
+          },
+          "rating": {
+            "type": "number",
+            "example": 4.8
+          },
+          "hourlySalary": {
+            "type": "number",
+            "example": 50
+          }
+        }
+      },
+      "SearchCommunitiesRequest": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": "string",
+            "example": "Data Science",
+            "description": "A keyword or partial/full name to search for communities."
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "Data Science"
+            },
+            "nullable": true,
+            "example": [
+              "Data Science",
+              "Machine Learning"
+            ]
+          },
+          "filters": {
+            "type": "object",
+            "properties": {
+              "experienceLevel": {
+                "type": "string",
+                "enum": [
+                  "entry_level",
+                  "intermediate",
+                  "expert"
+                ],
+                "example": "intermediate"
+              },
+              "hourlyRate": {
+                "type": "object",
+                "properties": {
+                  "min": {
+                    "type": "number",
+                    "example": 20
+                  },
+                  "max": {
+                    "type": "number",
+                    "example": 50
+                  }
+                }
+              },
+              "projectLength": {
+                "type": "string",
+                "enum": [
+                  "less_than_1_month",
+                  "1_to_3_months",
+                  "3_to_6_months",
+                  "more_than_6_months"
+                ],
+                "example": "1_to_3_months"
+              },
+              "hoursPerWeek": {
+                "type": "string",
+                "enum": [
+                  "less_than_30_hours",
+                  "more_than_30_hours"
+                ],
+                "example": "more_than_30_hours"
+              },
+              "rating": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 5,
+                "example": 4
+              }
+            }
+          }
+        }
+      },
+      "CommunityResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "67890"
+          },
+          "name": {
+            "type": "string",
+            "example": "Data Science Enthusiasts"
+          },
+          "description": {
+            "type": "string",
+            "example": "A community for data science enthusiasts to share knowledge and collaborate on projects."
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "Data Science"
+            }
+          },
+          "memberCount": {
+            "type": "integer",
+            "example": 500
+          }
+        }
+      },
+      "SearchJobsRequest": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": "string",
+            "example": "Developer",
+            "description": "A keyword or partial/full title to search for jobs."
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "Full Stack Development"
+            },
+            "nullable": true,
+            "example": [
+              "Full Stack Development",
+              "React"
+            ]
+          },
+          "filters": {
+            "type": "object",
+            "properties": {
+              "experienceLevel": {
+                "type": "string",
+                "enum": [
+                  "entry_level",
+                  "intermediate",
+                  "expert"
+                ],
+                "example": "intermediate"
+              },
+              "hourlyRate": {
+                "type": "object",
+                "properties": {
+                  "min": {
+                    "type": "number",
+                    "example": 20
+                  },
+                  "max": {
+                    "type": "number",
+                    "example": 50
+                  }
+                }
+              },
+              "projectLength": {
+                "type": "string",
+                "enum": [
+                  "less_than_1_month",
+                  "1_to_3_months",
+                  "3_to_6_months",
+                  "more_than_6_months"
+                ],
+                "example": "1_to_3_months"
+              },
+              "hoursPerWeek": {
+                "type": "string",
+                "enum": [
+                  "less_than_30_hours",
+                  "more_than_30_hours"
+                ],
+                "example": "more_than_30_hours"
+              },
+              "rating": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 5,
+                "example": 4
+              }
+            }
+          }
+        }
+      },
+      "JobResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "abc123"
+          },
+          "title": {
+            "type": "string",
+            "example": "Full Stack Developer"
+          },
+          "company": {
+            "type": "string",
+            "example": "TechCorp"
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "Full Stack Development"
+            }
+          },
+          "salary": {
+            "type": "number",
+            "example": 80000
+          }
+        }
+      },
+      "ErrorResponseSearch": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "example": "invalid_input"
+              },
+              "message": {
+                "type": "string",
+                "example": "The provided input is invalid. Please check your request."
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
