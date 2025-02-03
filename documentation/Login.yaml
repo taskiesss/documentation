@@ -1,0 +1,90 @@
+openapi: "3.0.0"
+info:
+  title: "Taskaya Project - Login APIs"
+  description: "This document describes the APIs related to user authentication."
+  version: "1.0.0"
+
+servers:
+  - url: "https://localhost/"
+    description: "Local development server"
+
+paths:
+  /login:
+    post:
+      tags:
+        - Login
+      summary: "Authenticate a user"
+      description: "Authenticate a user with their email and password."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: "User authenticated successfully"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+        "401":
+          description: "Unauthorized - Invalid email or password"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InvalidCredentialsError"
+        "500":
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+components:
+  schemas:
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          example: "john.doe@example.com"
+        password:
+          type: string
+          format: password
+          example: "SecurePassword123!"
+      required:
+        - email
+        - password
+
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+    InvalidCredentialsError:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            type:
+              type: string
+              example: "unauthorized"
+            message:
+              type: string
+              example: "The email or password provided is incorrect."
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            type:
+              type: string
+              example: "unknown"
+            message:
+              type: string
+              example: "An unexpected error occurred. Please try again later."

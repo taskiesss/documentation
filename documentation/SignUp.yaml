@@ -1,0 +1,209 @@
+openapi: "3.0.0"
+info:
+  title: "Taskaya Project - Signup APIs"
+  description: "This document describes the APIs related to user signup, including account creation, OTP generation, and OTP verification."
+  version: "1.0.0"
+
+servers:
+  - url: "https://localhost/"
+    description: "Local development server"
+
+paths:
+  /signup/create-account:
+    post:
+      tags:
+        - Signup
+      summary: "Register a new user"
+      description: "Register a new user with username, email, password, and role."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignupRequest"
+      responses:
+        "201":
+          description: "User registered successfully"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SignupResponse"
+        "400":
+          description: "Bad Request (e.g., invalid input)"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: "Conflict (e.g., username, email, or role already exists)"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        enum: ["username", "email", "role"]
+                        example: "username"
+                      message:
+                        type: string
+                        example: "The username is already taken."
+        "500":
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /signup/send-otp:
+    post:
+      tags:
+        - Signup
+      summary: "Send OTP to the user"
+      description: "Generate and send an OTP to the user's email for verification."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignupRequest"
+      responses:
+        "200":
+          description: "OTP sent successfully"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OTPResponse"
+        "500":
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /signup/verify:
+    post:
+      tags:
+        - Signup
+      summary: "Verify OTP"
+      description: "Verify the OTP sent to the user's email."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VerifyOTPRequest"
+      responses:
+        "200":
+          description: "OTP verified successfully"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OTPResponse"
+        "400":
+          description: "Invalid OTP"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InvalidOTPError"
+        "500":
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+components:
+  schemas:
+    SignupRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          example: "john_doe"
+        email:
+          type: string
+          format: email
+          example: "john.doe@example.com"
+        password:
+          type: string
+          format: password
+          example: "SecurePassword123!"
+        role:
+          type: string
+          example: "client"
+      required:
+        - username
+        - email
+        - password
+        - role
+
+    VerifyOTPRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          example: "john_doe"
+        email:
+          type: string
+          format: email
+          example: "john.doe@example.com"
+        password:
+          type: string
+          format: password
+          example: "SecurePassword123!"
+        role:
+          type: string
+          example: "client"
+        otp:
+          type: string
+          example: "123456"
+      required:
+        - username
+        - email
+        - password
+        - role
+        - otp
+
+    SignupResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "User registered successfully"
+
+    OTPResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "OTP sent successfully"
+
+    InvalidOTPError:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            type:
+              type: string
+              example: "invalid_otp"
+            message:
+              type: string
+              example: "The provided OTP is incorrect or has expired."
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            type:
+              type: string
+              example: "unknown"
+            message:
+              type: string
+              example: "An unexpected error occurred. Please try again later."
