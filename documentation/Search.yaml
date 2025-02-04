@@ -156,7 +156,7 @@ components:
           type: number
           description: Maximum hourly rate
           example: 50
-        rating:
+        rate:
           type: integer
           description: Filter by rating (1-5)
           example: 4
@@ -204,7 +204,7 @@ components:
           type: number
           description: Maximum hourly rate
           example: 50
-        rating:
+        rate:
           type: integer
           description: Filter by rating (1-5)
           example: 4
@@ -261,10 +261,7 @@ components:
             - 3_to_6_months
             - more_than_6_months
           example: "1_to_3_months"
-        rating:
-          type: integer
-          description: Filter by client rating (1-5)
-          example: 4
+        
         page:
           type: integer
           description: Zero-based page index
@@ -301,7 +298,7 @@ components:
           items:
             type: string
           example: ["Python", "Django"]
-        rating:
+        rate:
           type: number
           example: 4.8
         hourlySalary:
@@ -363,7 +360,7 @@ components:
           type: string
           format: date
           example: "2024-02-02"
-        rating:
+        rate:
           type: number
           example: 4
         isSaved:
