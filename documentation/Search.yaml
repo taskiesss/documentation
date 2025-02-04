@@ -17,8 +17,8 @@ paths:
       summary: Search for freelancers by skills, filters, and search term
       description: >
         Search for freelancers based on their skills, additional filters (such
-        as experience level, hourly rate, project length, hours per week, and
-        rating), and a search term that matches names or titles.
+        as experience level, hourly rate, and rating), and a search term that
+        matches names or titles.
       requestBody:
         required: false
         content:
@@ -31,9 +31,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/FreelancerResponse"
+                $ref: "#/components/schemas/PageFreelancerResponse"
         "400":
           description: Bad Request (e.g., invalid input)
           content:
@@ -53,8 +51,8 @@ paths:
       summary: Search for communities by skills, filters, and search term
       description: >
         Search for communities based on their skills, additional filters (such
-        as experience level, hourly rate, project length, hours per week, and
-        rating), and a search term that matches names or titles.
+        as experience level, hourly rate, and rating), and a search term that
+        matches names or titles.
       requestBody:
         required: false
         content:
@@ -67,9 +65,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/CommunityResponse"
+                $ref: "#/components/schemas/PageCommunityResponse"
         "400":
           description: Bad Request (e.g., invalid input)
           content:
@@ -88,9 +84,9 @@ paths:
         - Search
       summary: Search for jobs by skills, filters, and search term
       description: >
-        Retrieves job listings based on `id`,`title`, `description`, `experience level`, `skills`,` hourly rate range`, 
+        Retrieves job listings based on `id`,`title`, `description`, `experience level`, `skills`,`hourly rate range`, 
         `posted date`, `client rating`, and `whether the job is saved`. The search term matches job titles or descriptions. 
-        The response is an array of job objects containing these details.
+        The response is a paginated structure compatible with Spring's Page object.
       requestBody:
         required: false
         content:
@@ -103,9 +99,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/JobResponse"
+                $ref: "#/components/schemas/PageJobResponse"
         "400":
           description: Bad Request (e.g., invalid input)
           content:
@@ -120,6 +114,9 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 components:
   schemas:
+    # ----------------------------------------------
+    # REQUEST SCHEMAS
+    # ----------------------------------------------
     SearchFreelancersRequest:
       type: object
       properties:
@@ -160,32 +157,6 @@ components:
               minimum: 1
               maximum: 5
               example: 4
-    FreelancerResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          example: "12345"
-        name:
-          type: string
-          example: John Doe
-        title:
-          type: string
-          example: Senior Python Developer
-        description:
-          type: string
-          example: Experienced developer with expertise in Python and Django.
-        skills:
-          type: array
-          items:
-            type: string
-            example: Python
-        rating:
-          type: number
-          example: 4.8
-        hourlySalary:
-          type: number
-          example: 50
     SearchCommunitiesRequest:
       type: object
       properties:
@@ -226,28 +197,6 @@ components:
               minimum: 1
               maximum: 5
               example: 4
-    CommunityResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          example: "67890"
-        name:
-          type: string
-          example: Data Science Enthusiasts
-        description:
-          type: string
-          example: >-
-            A community for data science enthusiasts to share knowledge and
-            collaborate on projects.
-        skills:
-          type: array
-          items:
-            type: string
-            example: Data Science
-        memberCount:
-          type: integer
-          example: 500
     SearchJobsRequest:
       type: object
       properties:
@@ -296,6 +245,58 @@ components:
               minimum: 1
               maximum: 5
               example: 4
+    # ----------------------------------------------
+    # RESPONSE SCHEMAS
+    # ----------------------------------------------
+    # Single-item response definitions
+    FreelancerResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "12345"
+        name:
+          type: string
+          example: John Doe
+        title:
+          type: string
+          example: Senior Python Developer
+        description:
+          type: string
+          example: Experienced developer with expertise in Python and Django.
+        skills:
+          type: array
+          items:
+            type: string
+            example: Python
+        rating:
+          type: number
+          example: 4.8
+        hourlySalary:
+          type: number
+          example: 50
+    CommunityResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "67890"
+        name:
+          type: string
+          example: Data Science Enthusiasts
+        description:
+          type: string
+          example: >-
+            A community for data science enthusiasts to share knowledge and
+            collaborate on projects.
+        skills:
+          type: array
+          items:
+            type: string
+            example: Data Science
+        memberCount:
+          type: integer
+          example: 500
     JobResponse:
       type: object
       properties:
@@ -312,13 +313,20 @@ components:
             to join our growing team. You will be responsible for building, maintaining, and enhancing user interfaces.
         experienceLevel:
           type: string
-          enum: ["Entry Level", "Intermediate", "Expert"]
+          enum:
+            - Entry Level
+            - Intermediate
+            - Expert
           example: Intermediate
         skills:
           type: array
           items:
             type: string
-            example: ["React", "HTML", "CSS", "JavaScript"]
+          example:
+            - React
+            - HTML
+            - CSS
+            - JavaScript
         hourlyRate:
           type: object
           properties:
@@ -338,6 +346,159 @@ components:
         isSaved:
           type: boolean
           example: false
+    # ----------------------------------------------
+    # PAGINATED WRAPPERS (Spring Page<> structure)
+    # ----------------------------------------------
+    # Sort object for metadata about sorting
+    Sort:
+      type: object
+      properties:
+        sorted:
+          type: boolean
+          example: true
+        unsorted:
+          type: boolean
+          example: false
+        empty:
+          type: boolean
+          example: false
+
+    # Pageable object representing the request offsets, etc.
+    Pageable:
+      type: object
+      properties:
+        sort:
+          $ref: "#/components/schemas/Sort"
+        offset:
+          type: integer
+          example: 0
+        pageNumber:
+          type: integer
+          example: 0
+        pageSize:
+          type: integer
+          example: 10
+        paged:
+          type: boolean
+          example: true
+        unpaged:
+          type: boolean
+          example: false
+
+    # PageFreelancerResponse
+    PageFreelancerResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/FreelancerResponse"
+        pageable:
+          $ref: "#/components/schemas/Pageable"
+        totalElements:
+          type: integer
+          example: 25
+        totalPages:
+          type: integer
+          example: 3
+        last:
+          type: boolean
+          example: false
+        size:
+          type: integer
+          example: 10
+        number:
+          type: integer
+          example: 0
+        sort:
+          $ref: "#/components/schemas/Sort"
+        numberOfElements:
+          type: integer
+          example: 10
+        first:
+          type: boolean
+          example: true
+        empty:
+          type: boolean
+          example: false
+
+    # PageCommunityResponse
+    PageCommunityResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/CommunityResponse"
+        pageable:
+          $ref: "#/components/schemas/Pageable"
+        totalElements:
+          type: integer
+          example: 100
+        totalPages:
+          type: integer
+          example: 10
+        last:
+          type: boolean
+          example: false
+        size:
+          type: integer
+          example: 10
+        number:
+          type: integer
+          example: 0
+        sort:
+          $ref: "#/components/schemas/Sort"
+        numberOfElements:
+          type: integer
+          example: 10
+        first:
+          type: boolean
+          example: true
+        empty:
+          type: boolean
+          example: false
+
+    # PageJobResponse
+    PageJobResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/JobResponse"
+        pageable:
+          $ref: "#/components/schemas/Pageable"
+        totalElements:
+          type: integer
+          example: 50
+        totalPages:
+          type: integer
+          example: 5
+        last:
+          type: boolean
+          example: false
+        size:
+          type: integer
+          example: 10
+        number:
+          type: integer
+          example: 0
+        sort:
+          $ref: "#/components/schemas/Sort"
+        numberOfElements:
+          type: integer
+          example: 10
+        first:
+          type: boolean
+          example: true
+        empty:
+          type: boolean
+          example: false
+
+    # ----------------------------------------------
+    # ERROR SCHEMAS
+    # ----------------------------------------------
     ErrorResponseSearch:
       type: object
       properties:
