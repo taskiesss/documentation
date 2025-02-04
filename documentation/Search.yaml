@@ -282,8 +282,8 @@ components:
       type: object
       properties:
         id:
-          type: string
-          example: "12345"
+          type: String
+          example: "887dda4d-c986-44c9-bba8-d1bef62d1c91"
         name:
           type: string
           example: "John Doe"
@@ -310,7 +310,7 @@ components:
       properties:
         id:
           type: string
-          example: "67890"
+          example: "887dda4d-c986-44c9-bba8-d1bef62d1c91"
         name:
           type: string
           example: "Data Science Enthusiasts"
@@ -330,8 +330,8 @@ components:
       type: object
       properties:
         id:
-          type: number
-          example: 88
+          type: string
+          example: 887dda4d-c986-44c9-bba8-d1bef62d1c91
         title:
           type: string
           example: "Full Stack Developer"
