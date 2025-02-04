@@ -6,9 +6,11 @@ info:
     includes schemas and endpoints for the Signup, Login, and Search processes.
     Additional APIs (e.g., Forgot Password) will be added in future updates.
   version: 1.0.0
+
 servers:
   - url: https://localhost/
     description: Local development server
+
 paths:
   /search/freelancers:
     post:
@@ -18,7 +20,8 @@ paths:
       description: >
         Search for freelancers based on their skills, additional filters (such
         as experience level, hourly rate, and rating), and a search term that
-        matches names or titles.
+        matches names or titles. The request also includes top-level pagination
+        fields (page, size, sort).
       requestBody:
         required: false
         content:
@@ -44,6 +47,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+
   /search/communities:
     post:
       tags:
@@ -52,7 +56,8 @@ paths:
       description: >
         Search for communities based on their skills, additional filters (such
         as experience level, hourly rate, and rating), and a search term that
-        matches names or titles.
+        matches names or titles. The request also includes top-level pagination
+        fields (page, size, sort).
       requestBody:
         required: false
         content:
@@ -78,15 +83,17 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+
   /search/jobs:
     post:
       tags:
         - Search
       summary: Search for jobs by skills, filters, and search term
       description: >
-        Retrieves job listings based on `id`,`title`, `description`, `experience level`, `skills`,`hourly rate range`, 
-        `posted date`, `client rating`, and `whether the job is saved`. The search term matches job titles or descriptions. 
-        The response is a paginated structure compatible with Spring's Page object.
+        Retrieves job listings based on `id`, `title`, `description`, 
+        `experienceLevel`, `skills`, `hourlyRateMin/Max`, `projectLength`, 
+        `postedDate`, `rating`, and `isSaved`. The search term matches job 
+        titles or descriptions. Includes top-level pagination fields.
       requestBody:
         required: false
         content:
@@ -112,143 +119,168 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+
 components:
   schemas:
-    # ----------------------------------------------
-    # REQUEST SCHEMAS
-    # ----------------------------------------------
+    # ------------------------------------------------------
+    # SEARCH REQUESTS (Flattened)
+    # ------------------------------------------------------
     SearchFreelancersRequest:
       type: object
       properties:
         search:
           type: string
-          example: John
           description: A keyword or partial/full name to search for freelancers.
+          example: "John"
         skills:
           type: array
+          description: List of skills to filter by
           items:
             type: string
-            example: Python
-          nullable: true
           example:
-            - Python
-            - JavaScript
-        filters:
-          type: object
-          properties:
-            experienceLevel:
-              type: string
-              enum:
-                - entry_level
-                - intermediate
-                - expert
-              example: intermediate
-            hourlyRate:
-              type: object
-              properties:
-                min:
-                  type: number
-                  example: 20
-                max:
-                  type: number
-                  example: 50
-            rating:
-              type: integer
-              minimum: 1
-              maximum: 5
-              example: 4
+            - "Python"
+            - "JavaScript"
+        experienceLevel:
+          type: string
+          description: Experience level filter
+          enum:
+            - entry_level
+            - intermediate
+            - expert
+          example: "intermediate"
+        hourlyRateMin:
+          type: number
+          description: Minimum hourly rate
+          example: 20
+        hourlyRateMax:
+          type: number
+          description: Maximum hourly rate
+          example: 50
+        rating:
+          type: integer
+          description: Filter by rating (1-5)
+          example: 4
+        page:
+          type: integer
+          description: Zero-based page index
+          example: 0
+        size:
+          type: integer
+          description: Size of each page
+          example: 10
+        sort:
+          type: string
+          description: Sorting criteria, e.g., "name,asc" or "rating,desc"
+          example: "rating,desc"
+
     SearchCommunitiesRequest:
       type: object
       properties:
         search:
           type: string
-          example: Data Science
           description: A keyword or partial/full name to search for communities.
+          example: "Data Science"
         skills:
           type: array
+          description: List of skills to filter by
           items:
             type: string
-            example: Data Science
-          nullable: true
           example:
-            - Data Science
-            - Machine Learning
-        filters:
-          type: object
-          properties:
-            experienceLevel:
-              type: string
-              enum:
-                - entry_level
-                - intermediate
-                - expert
-              example: intermediate
-            hourlyRate:
-              type: object
-              properties:
-                min:
-                  type: number
-                  example: 20
-                max:
-                  type: number
-                  example: 50
-            rating:
-              type: integer
-              minimum: 1
-              maximum: 5
-              example: 4
+            - "Data Science"
+            - "Machine Learning"
+        experienceLevel:
+          type: string
+          description: Experience level filter
+          enum:
+            - entry_level
+            - intermediate
+            - expert
+          example: "intermediate"
+        hourlyRateMin:
+          type: number
+          description: Minimum hourly rate
+          example: 20
+        hourlyRateMax:
+          type: number
+          description: Maximum hourly rate
+          example: 50
+        rating:
+          type: integer
+          description: Filter by rating (1-5)
+          example: 4
+        page:
+          type: integer
+          description: Zero-based page index
+          example: 0
+        size:
+          type: integer
+          description: Size of each page
+          example: 10
+        sort:
+          type: string
+          description: Sorting criteria, e.g., "name,asc" or "rating,desc"
+          example: "name,asc"
+
     SearchJobsRequest:
       type: object
       properties:
         search:
           type: string
-          example: Developer
           description: A keyword or partial/full title to search for jobs.
+          example: "Developer"
         skills:
           type: array
+          description: List of skills to filter by
           items:
             type: string
-            example: Full Stack Development
-          nullable: true
           example:
-            - Full Stack Development
-            - React
-        filters:
-          type: object
-          properties:
-            experienceLevel:
-              type: string
-              enum:
-                - entry_level
-                - intermediate
-                - expert
-              example: intermediate
-            hourlyRate:
-              type: object
-              properties:
-                min:
-                  type: number
-                  example: 20
-                max:
-                  type: number
-                  example: 50
-            projectLength:
-              type: string
-              enum:
-                - less_than_1_month
-                - 1_to_3_months
-                - 3_to_6_months
-                - more_than_6_months
-              example: 1_to_3_months
-            rating:
-              type: integer
-              minimum: 1
-              maximum: 5
-              example: 4
-    # ----------------------------------------------
-    # RESPONSE SCHEMAS
-    # ----------------------------------------------
-    # Single-item response definitions
+            - "Full Stack Development"
+            - "React"
+        experienceLevel:
+          type: string
+          description: Experience level filter
+          enum:
+            - entry_level
+            - intermediate
+            - expert
+          example: "intermediate"
+        hourlyRateMin:
+          type: number
+          description: Minimum hourly rate
+          example: 20
+        hourlyRateMax:
+          type: number
+          description: Maximum hourly rate
+          example: 50
+        projectLength:
+          type: string
+          description: Duration of the project
+          enum:
+            - less_than_1_month
+            - 1_to_3_months
+            - 3_to_6_months
+            - more_than_6_months
+          example: "1_to_3_months"
+        rating:
+          type: integer
+          description: Filter by client rating (1-5)
+          example: 4
+        page:
+          type: integer
+          description: Zero-based page index
+          example: 0
+        size:
+          type: integer
+          description: Size of each page
+          example: 10
+        sort:
+          type: string
+          description: Sorting criteria, e.g., "title,asc" or "postedDate,desc"
+          example: "title,asc"
+
+    # ------------------------------------------------------
+    # SINGLE-ITEM RESPONSE SCHEMAS
+    # ------------------------------------------------------
     FreelancerResponse:
       type: object
       properties:
@@ -257,24 +289,25 @@ components:
           example: "12345"
         name:
           type: string
-          example: John Doe
+          example: "John Doe"
         title:
           type: string
-          example: Senior Python Developer
+          example: "Senior Python Developer"
         description:
           type: string
-          example: Experienced developer with expertise in Python and Django.
+          example: "Experienced developer with expertise in Python and Django."
         skills:
           type: array
           items:
             type: string
-            example: Python
+          example: ["Python", "Django"]
         rating:
           type: number
           example: 4.8
         hourlySalary:
           type: number
           example: 50
+
     CommunityResponse:
       type: object
       properties:
@@ -283,20 +316,19 @@ components:
           example: "67890"
         name:
           type: string
-          example: Data Science Enthusiasts
+          example: "Data Science Enthusiasts"
         description:
           type: string
-          example: >-
-            A community for data science enthusiasts to share knowledge and
-            collaborate on projects.
+          example: "A community for data science enthusiasts..."
         skills:
           type: array
           items:
             type: string
-            example: Data Science
+          example: ["Data Science", "Machine Learning"]
         memberCount:
           type: integer
           example: 500
+
     JobResponse:
       type: object
       properties:
@@ -305,28 +337,19 @@ components:
           example: 88
         title:
           type: string
-          example: Full Stack Developer
+          example: "Full Stack Developer"
         description:
           type: string
-          example: >
-            Seeking a skilled Front-End UI Developer with a strong foundation in React and Material UI (MUI)
-            to join our growing team. You will be responsible for building, maintaining, and enhancing user interfaces.
+          example: "Seeking a skilled React developer..."
         experienceLevel:
           type: string
-          enum:
-            - Entry Level
-            - Intermediate
-            - Expert
-          example: Intermediate
+          enum: ["Entry Level", "Intermediate", "Expert"]
+          example: "Intermediate"
         skills:
           type: array
           items:
             type: string
-          example:
-            - React
-            - HTML
-            - CSS
-            - JavaScript
+          example: ["React", "HTML", "CSS", "JavaScript"]
         hourlyRate:
           type: object
           properties:
@@ -346,24 +369,23 @@ components:
         isSaved:
           type: boolean
           example: false
-    # ----------------------------------------------
-    # PAGINATED WRAPPERS (Spring Page<> structure)
-    # ----------------------------------------------
-    # Sort object for metadata about sorting
+
+    # ------------------------------------------------------
+    # PAGED RESPONSE WRAPPERS (Spring Page<> style)
+    # ------------------------------------------------------
     Sort:
       type: object
       properties:
         sorted:
           type: boolean
-          example: true
+          example: false
         unsorted:
           type: boolean
-          example: false
+          example: true
         empty:
           type: boolean
           example: false
 
-    # Pageable object representing the request offsets, etc.
     Pageable:
       type: object
       properties:
@@ -385,7 +407,6 @@ components:
           type: boolean
           example: false
 
-    # PageFreelancerResponse
     PageFreelancerResponse:
       type: object
       properties:
@@ -422,7 +443,6 @@ components:
           type: boolean
           example: false
 
-    # PageCommunityResponse
     PageCommunityResponse:
       type: object
       properties:
@@ -459,7 +479,6 @@ components:
           type: boolean
           example: false
 
-    # PageJobResponse
     PageJobResponse:
       type: object
       properties:
@@ -496,9 +515,9 @@ components:
           type: boolean
           example: false
 
-    # ----------------------------------------------
+    # ------------------------------------------------------
     # ERROR SCHEMAS
-    # ----------------------------------------------
+    # ------------------------------------------------------
     ErrorResponseSearch:
       type: object
       properties:
@@ -507,10 +526,11 @@ components:
           properties:
             type:
               type: string
-              example: invalid_input
+              example: "invalid_input"
             message:
               type: string
-              example: The provided input is invalid. Please check your request.
+              example: "The provided input is invalid. Please check your request."
+
     ErrorResponse:
       type: object
       properties:
@@ -519,7 +539,7 @@ components:
           properties:
             type:
               type: string
-              example: unknown
+              example: "unknown"
             message:
               type: string
-              example: An unexpected error occurred. Please try again later.
+              example: "An unexpected error occurred. Please try again later."
