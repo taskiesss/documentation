@@ -21,7 +21,7 @@ paths:
         Search for freelancers based on their skills, additional filters (such
         as experience level, hourly rate, and rating), and a search term that
         matches names or titles. The request also includes top-level pagination
-        fields (page, size, sort).
+        fields (page, size, sortBy, sortDirection).
       requestBody:
         required: false
         content:
@@ -57,7 +57,7 @@ paths:
         Search for communities based on their skills, additional filters (such
         as experience level, hourly rate, and rating), and a search term that
         matches names or titles. The request also includes top-level pagination
-        fields (page, size, sort).
+        fields (page, size, sortBy, sortDirection).
       requestBody:
         required: false
         content:
@@ -93,7 +93,8 @@ paths:
         Retrieves job listings based on `id`, `title`, `description`, 
         `experienceLevel`, `skills`, `hourlyRateMin/Max`, `projectLength`, 
         `postedDate`, `rating`, and `isSaved`. The search term matches job 
-        titles or descriptions. Includes top-level pagination fields.
+        titles or descriptions. Includes top-level pagination fields (page, size,
+        sortBy, sortDirection).
       requestBody:
         required: false
         content:
@@ -123,7 +124,7 @@ paths:
 components:
   schemas:
     # ------------------------------------------------------
-    # SEARCH REQUESTS (Flattened)
+    # SEARCH REQUESTS (Flattened) -- Updated sort fields
     # ------------------------------------------------------
     SearchFreelancersRequest:
       type: object
@@ -160,6 +161,7 @@ components:
           type: integer
           description: Filter by rating (1-5)
           example: 4
+
         page:
           type: integer
           description: Zero-based page index
@@ -168,10 +170,17 @@ components:
           type: integer
           description: Size of each page
           example: 10
-        sort:
+        sortBy:
           type: string
-          description: Sorting criteria, e.g., "name,asc" or "rating,desc"
-          example: "rating,desc"
+          description: Sorting field, e.g. "name" or "rating"
+          example: "rating"
+        sortDirection:
+          type: string
+          description: Sorting direction
+          enum:
+            - ASC
+            - DESC
+          example: "DESC"
 
     SearchCommunitiesRequest:
       type: object
@@ -208,6 +217,7 @@ components:
           type: integer
           description: Filter by rating (1-5)
           example: 4
+
         page:
           type: integer
           description: Zero-based page index
@@ -216,10 +226,17 @@ components:
           type: integer
           description: Size of each page
           example: 10
-        sort:
+        sortBy:
           type: string
-          description: Sorting criteria, e.g., "name,asc" or "rating,desc"
-          example: "name,asc"
+          description: Sorting field, e.g. "name" or "rating"
+          example: "name"
+        sortDirection:
+          type: string
+          description: Sorting direction
+          enum:
+            - ASC
+            - DESC
+          example: "ASC"
 
     SearchJobsRequest:
       type: object
@@ -261,7 +278,7 @@ components:
             - _3_to_6_months
             - _more_than_6_months
           example: "_1_to_3_months"
-        
+
         page:
           type: integer
           description: Zero-based page index
@@ -270,10 +287,17 @@ components:
           type: integer
           description: Size of each page
           example: 10
-        sort:
+        sortBy:
           type: string
-          description: Sorting criteria, e.g., "title,asc" or "postedDate,desc"
-          example: "title,asc"
+          description: Sorting field, e.g. "title" or "postedDate"
+          example: "title"
+        sortDirection:
+          type: string
+          enum:
+            - ASC
+            - DESC
+          description: Sorting direction
+          example: "ASC"
 
     # ------------------------------------------------------
     # SINGLE-ITEM RESPONSE SCHEMAS
@@ -282,7 +306,7 @@ components:
       type: object
       properties:
         id:
-          type: String
+          type: string
           example: "887dda4d-c986-44c9-bba8-d1bef62d1c91"
         name:
           type: string
@@ -331,7 +355,7 @@ components:
       properties:
         id:
           type: string
-          example: 887dda4d-c986-44c9-bba8-d1bef62d1c91
+          example: "887dda4d-c986-44c9-bba8-d1bef62d1c91"
         title:
           type: string
           example: "Full Stack Developer"
