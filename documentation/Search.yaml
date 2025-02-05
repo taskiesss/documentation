@@ -325,7 +325,7 @@ components:
         rate:
           type: number
           example: 4.8
-        hourlySalary:
+        pricePerHour:
           type: number
           example: 50
 
@@ -355,7 +355,7 @@ components:
           example: 4.7
         pricePerHour:
           type: number
-          foramt: double
+          format: double
           example: 29.99
 
     JobResponse:
@@ -379,15 +379,10 @@ components:
           items:
             type: string
           example: ["React", "HTML", "CSS", "JavaScript"]
-        hourlyRate:
-          type: object
-          properties:
-            min:
-              type: number
-              example: 20
-            max:
-              type: number
-              example: 30
+        pricePerHour:
+          type: number
+          format: double
+          example: 29.99
         postedDate:
           type: string
           format: date
