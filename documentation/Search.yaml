@@ -1,3 +1,4 @@
+
 openapi: 3.0.0
 info:
   title: Taskaya Project - APIs
@@ -371,15 +372,14 @@ components:
           items:
             type: string
           example: ["React", "HTML", "CSS", "JavaScript"]
-        hourlyRate:
-          type: object
-          properties:
-            min:
-              type: number
-              example: 20
-            max:
-              type: number
-              example: 30
+        hourlyRateMin:
+          type: number
+          description: Minimum hourly rate
+          example: 20
+        hourlyRateMax:
+          type: number
+          description: Maximum hourly rate
+          example: 50
         postedDate:
           type: string
           format: date
