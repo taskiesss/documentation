@@ -387,6 +387,14 @@ components:
           type: string
           format: date
           example: "2024-02-02"
+        projectLength:
+          type: string
+          enum:
+            - _less_than_1_month
+            - _1_to_3_months
+            - _3_to_6_months
+            - _more_than_6_months
+          example: "_1_to_3_months"
         rate:
           type: number
           example: 4
