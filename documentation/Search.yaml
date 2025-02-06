@@ -123,9 +123,6 @@ paths:
 
 components:
   schemas:
-    # ------------------------------------------------------
-    # SEARCH REQUESTS (Flattened) -- Updated sort fields
-    # ------------------------------------------------------
     SearchFreelancersRequest:
       type: object
       properties:
@@ -161,7 +158,6 @@ components:
           type: integer
           description: Filter by rating (1-5)
           example: 4
-
         page:
           type: integer
           description: Zero-based page index
@@ -172,8 +168,8 @@ components:
           example: 10
         sortBy:
           type: string
-          description: Sorting field, e.g. "name" or "rating"
-          example: "rating"
+          description: Sorting field, e.g. "Rate", "pricePerHour", "postedAT"
+          example: "Rate"
         sortDirection:
           type: string
           description: Sorting direction
@@ -217,7 +213,10 @@ components:
           type: integer
           description: Filter by rating (1-5)
           example: 4
-
+        isFull:
+          type: boolean
+          description: Whether to search for full communities only
+          example: true
         page:
           type: integer
           description: Zero-based page index
@@ -228,7 +227,7 @@ components:
           example: 10
         sortBy:
           type: string
-          description: Sorting field, e.g. "name" or "rating"
+          description: Sorting field, e.g. "Rate", "pricePerHour", "postedAT"
           example: "name"
         sortDirection:
           type: string
@@ -278,7 +277,6 @@ components:
             - _3_to_6_months
             - _more_than_6_months
           example: "_1_to_3_months"
-
         page:
           type: integer
           description: Zero-based page index
@@ -299,9 +297,6 @@ components:
           description: Sorting direction
           example: "ASC"
 
-    # ------------------------------------------------------
-    # SINGLE-ITEM RESPONSE SCHEMAS
-    # ------------------------------------------------------
     FreelancerResponse:
       type: object
       properties:
@@ -328,6 +323,9 @@ components:
         pricePerHour:
           type: number
           example: 50
+        profilePicture:
+          type: string
+          example: "https://example.com/profile.jpg"
 
     CommunityResponse:
       type: object
@@ -335,6 +333,9 @@ components:
         id:
           type: string
           example: "887dda4d-c986-44c9-bba8-d1bef62d1c91"
+        isFull:
+          type: boolean
+          example: true
         name:
           type: string
           example: "Data Science Enthusiasts"
@@ -357,6 +358,9 @@ components:
           type: number
           format: double
           example: 29.99
+        profilePicture:
+          type: string
+          example: "https://example.com/community.jpg"
 
     JobResponse:
       type: object
@@ -402,9 +406,6 @@ components:
           type: boolean
           example: false
 
-    # ------------------------------------------------------
-    # PAGED RESPONSE WRAPPERS (Spring Page<> style)
-    # ------------------------------------------------------
     Sort:
       type: object
       properties:
@@ -547,9 +548,6 @@ components:
           type: boolean
           example: false
 
-    # ------------------------------------------------------
-    # ERROR SCHEMAS
-    # ------------------------------------------------------
     ErrorResponseSearch:
       type: object
       properties:
