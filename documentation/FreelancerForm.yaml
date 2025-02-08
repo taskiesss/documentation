@@ -1,0 +1,121 @@
+openapi: 3.0.3
+info:
+  title: Freelancer Form API
+  version: "1.0.0"
+  description: API for submitting critical freelancer information.
+paths:
+  /freelancer-form:
+    post:
+      summary: Submit Freelancer Profile
+      description: >
+        Submit a new freelancer profile including professional title, skills, hourly rate, professional summary,
+        education details, languages spoken, and weekly availability.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                professionalTitle:
+                  type: string
+                  example: "Senior Software Engineer"
+                skills:
+                  type: array
+                  description: List of freelancer skills.
+                  items:
+                    type: string
+                  example: ["JavaScript", "React", "Node.js"]
+                hourlyRate:
+                  type: number
+                  format: float
+                  example: 45.99
+                professionalSummary:
+                  type: string
+                  example: "Experienced developer with over 10 years of expertise in building scalable web applications."
+                education:
+                  type: array
+                  description: List of educational qualifications.
+                  items:
+                    type: object
+                    properties:
+                      degree:
+                        type: string
+                        example: "Bachelor of Science in Computer Science"
+                      institution:
+                        type: string
+                        example: "University of XYZ"
+                      graduationYear:
+                        type: integer
+                        example: 2012
+                  example:
+                    - degree: "Bachelor of Science in Computer Science"
+                      institution: "University of XYZ"
+                      graduationYear: 2012
+                languages:
+                  type: array
+                  description: List of languages spoken by the freelancer.
+                  items:
+                    type: string
+                  example: ["English", "Spanish"]
+                hoursPerWeek:
+                  type: string
+                  description: Availability per week.
+                  enum:
+                    - "More than 30 hr/week"
+                    - "Less than 30 hr/week"
+                    - "None"
+                  example: "More than 30 hr/week"
+              required:
+                - professionalTitle
+                - skills
+                - hourlyRate
+                - professionalSummary
+      responses:
+        "201":
+          description: Freelancer profile submitted successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: boolean
+                    example: true
+        "401":
+          description: Unauthorized - Authentication credentials were missing or invalid.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Authentication required."
+        "403":
+          description: Forbidden - The user does not have permission to perform this action.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "You do not have permission to create a freelancer profile."
+        "500":
+          description: Internal Server Error - An unexpected error occurred on the server.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "An unexpected error occurred. Please try again later."
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
