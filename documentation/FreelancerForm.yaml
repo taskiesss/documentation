@@ -19,6 +19,12 @@ paths:
             schema:
               type: object
               properties:
+                FirstName:
+                  type: string
+                  example: "Ali"
+                LastName:
+                  type: string
+                  example: "Ahmed"
                 professionalTitle:
                   type: string
                   example: "Senior Software Engineer"
@@ -36,24 +42,22 @@ paths:
                   type: string
                   example: "Experienced developer with over 10 years of expertise in building scalable web applications."
                 education:
-                  type: array
-                  description: List of educational qualifications.
-                  items:
-                    type: object
-                    properties:
-                      degree:
-                        type: string
-                        example: "Bachelor of Science in Computer Science"
-                      institution:
-                        type: string
-                        example: "University of XYZ"
-                      graduationYear:
-                        type: integer
-                        example: 2012
+                  type: object
+                  description: Educational qualification.
+                  properties:
+                    degree:
+                      type: string
+                      example: "Bachelor of Science in Computer Science"
+                    institution:
+                      type: string
+                      example: "University of XYZ"
+                    graduationYear:
+                      type: integer
+                      example: 2012
                   example:
-                    - degree: "Bachelor of Science in Computer Science"
-                      institution: "University of XYZ"
-                      graduationYear: 2012
+                    degree: "Bachelor of Science in Computer Science"
+                    institution: "University of XYZ"
+                    graduationYear: 2012
                 languages:
                   type: array
                   description: List of languages spoken by the freelancer.
@@ -69,6 +73,8 @@ paths:
                     - "None"
                   example: "More than 30 hr/week"
               required:
+                - FirstName
+                - LastName
                 - professionalTitle
                 - skills
                 - hourlyRate
@@ -92,8 +98,14 @@ paths:
                 type: object
                 properties:
                   error:
-                    type: string
-                    example: "Authentication required."
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        example: "unauthorized"
+                      message:
+                        type: string
+                        example: "Authentication required."
         "403":
           description: Forbidden - The user does not have permission to perform this action.
           content:
@@ -102,8 +114,14 @@ paths:
                 type: object
                 properties:
                   error:
-                    type: string
-                    example: "You do not have permission to create a freelancer profile."
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        example: "forbidden"
+                      message:
+                        type: string
+                        example: "You do not have permission to create a freelancer profile."
         "500":
           description: Internal Server Error - An unexpected error occurred on the server.
           content:
@@ -112,8 +130,14 @@ paths:
                 type: object
                 properties:
                   error:
-                    type: string
-                    example: "An unexpected error occurred. Please try again later."
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        example: "unknown"
+                      message:
+                        type: string
+                        example: "An unexpected error occurred. Please try again later."
 components:
   securitySchemes:
     bearerAuth:
