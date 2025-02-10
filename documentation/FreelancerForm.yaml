@@ -72,8 +72,8 @@ paths:
                   description: Weekly availability in hours.
                   example: 35.5
               required:
-                - FirstName
-                - LastName
+                - firstName
+                - lastName
                 - professionalTitle
                 - skills
                 - hourlyRate
