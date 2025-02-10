@@ -139,13 +139,16 @@ components:
             - "Python"
             - "JavaScript"
         experienceLevel:
-          type: string
-          description: Experience level filter
-          enum:
-            - entry_level
-            - intermediate
-            - expert
-          example: "intermediate"
+          type: array
+          description: List of experience levels to filter by
+          items:
+            type: string
+            enum:
+              - entry_level
+              - intermediate
+              - expert
+          example: ["intermediate", "expert"]
+
         hourlyRateMin:
           type: number
           description: Minimum hourly rate
@@ -194,13 +197,15 @@ components:
             - "Data Science"
             - "Machine Learning"
         experienceLevel:
-          type: string
-          description: Experience level filter
-          enum:
-            - entry_level
-            - intermediate
-            - expert
-          example: "intermediate"
+          type: array
+          description: List of experience levels to filter by
+          items:
+            type: string
+            enum:
+              - entry_level
+              - intermediate
+              - expert
+          example: ["intermediate", "expert"]
         hourlyRateMin:
           type: number
           description: Minimum hourly rate
@@ -253,13 +258,15 @@ components:
             - "Full Stack Development"
             - "React"
         experienceLevel:
-          type: string
-          description: Experience level filter
-          enum:
-            - entry_level
-            - intermediate
-            - expert
-          example: "intermediate"
+          type: array
+          description: List of experience levels to filter by
+          items:
+            type: string
+            enum:
+              - entry_level
+              - intermediate
+              - expert
+          example: ["intermediate", "expert"]
         hourlyRateMin:
           type: number
           description: Minimum hourly rate
@@ -269,14 +276,16 @@ components:
           description: Maximum hourly rate
           example: 50
         projectLength:
-          type: string
-          description: Duration of the project
-          enum:
-            - _less_than_1_month
-            - _1_to_3_months
-            - _3_to_6_months
-            - _more_than_6_months
-          example: "_1_to_3_months"
+          type: array
+          description: List of project durations to filter by
+          items:
+            type: string
+            enum:
+              - _less_than_1_month
+              - _1_to_3_months
+              - _3_to_6_months
+              - _more_than_6_months
+          example: ["_1_to_3_months", "_3_to_6_months"]
         page:
           type: integer
           description: Zero-based page index
@@ -320,6 +329,14 @@ components:
         rate:
           type: number
           example: 4.8
+        experienceLevel:
+          type: string
+          description: Experience level filter
+          enum:
+            - entry_level
+            - intermediate
+            - expert
+          example: "intermediate"
         pricePerHour:
           type: number
           example: 50
@@ -347,6 +364,14 @@ components:
           items:
             type: string
           example: ["Data Science", "Machine Learning"]
+        experienceLevel:
+          type: string
+          description: Experience level filter
+          enum:
+            - entry_level
+            - intermediate
+            - expert
+          example: "intermediate"
         memberCount:
           type: integer
           example: 500
