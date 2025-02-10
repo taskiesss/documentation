@@ -28,12 +28,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/LoginResponse"
-        "401":
-          description: "Unauthorized - Invalid email or password"
+        "400":
+          description: "Bad Request - Input validation error"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/InvalidCredentialsError"
+                $ref: "#/components/schemas/BadRequestResponse"
+
         "500":
           description: "Internal server error"
           content:
@@ -64,6 +65,41 @@ components:
         token:
           type: string
           example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        role:
+          type: String 
+          
+          example: "ADMIN or FREELANCER or CLIENT"
+        isFirst:
+          type: boolean
+          default: false
+          description: "Indicates if this is the user's first login"
+      required:
+        - token
+        - role
+        - isFirst
+
+    BadRequestResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: "BAD_REQUEST"
+        message:
+          type: string
+          example: "Invalid request data."
+        timeStamp:
+          type: integer
+          format: int64
+          example: 1611111111111
+        type:
+          type: string
+          example: "email"
+      required:
+        - status
+        - message
+        - timeStamp
+        - type
+
     InvalidCredentialsError:
       type: object
       properties:
@@ -76,6 +112,9 @@ components:
             message:
               type: string
               example: "The email or password provided is incorrect."
+      required:
+        - error
+
     ErrorResponse:
       type: object
       properties:
@@ -88,3 +127,5 @@ components:
             message:
               type: string
               example: "An unexpected error occurred. Please try again later."
+      required:
+        - error
