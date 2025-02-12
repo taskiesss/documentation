@@ -6,7 +6,14 @@ info:
 servers:
   - url: http://localhost/
 paths:
-  /ux/freelancer/{jobid}/application:
+  /proposals/{jobid}:
+    parameters:
+      - name: jobid
+        in: path
+        required: true
+        description: Dynamic identifier for the job.
+        schema:
+          type: string
     post:
       summary: Submit a job application
       description: Create a new job application with job identifier, freelancer payment details, milestones, cover letter, and attachments.
@@ -21,16 +28,18 @@ paths:
               $ref: "#/components/schemas/JobApplication"
             example:
               jobId: "job-001"
+              candidateId: "candidate-123"
+              pricePerHour: 50.00
               freelancerPayment: PerMilestones
               milestones:
                 - title: "Design Phase"
                   description: "Complete the initial design mockups."
                   dueDate: "2025-03-01"
-                  amount: 500.00
+                  expectedHours: 20
                 - title: "Development Phase"
                   description: "Develop the main features."
                   dueDate: "2025-04-15"
-                  amount: 1500.00
+                  expectedHours: 40
               coverLetter: "I am very interested in this job and believe my skills are a perfect match."
               attachments:
                 - "http://example.com/project.pdf"
@@ -42,7 +51,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/JobApplicationResponse"
               example:
-                id: "successful"
+                type: "successful"
                 message: "Job application submitted successfully."
         "400":
           description: Invalid input provided
@@ -73,6 +82,8 @@ components:
       type: object
       required:
         - jobId
+        - candidateId
+        - pricePerHour
         - freelancerPayment
         - coverLetter
       properties:
@@ -80,6 +91,15 @@ components:
           type: string
           description: Identifier of the job for which the application is submitted.
           example: "job-001"
+        candidateId:
+          type: string
+          description: Identifier of the candidate submitting the application.
+          example: "candidate-123"
+        pricePerHour:
+          type: number
+          format: double
+          description: Hourly rate for the freelancer.
+          example: 50.00
         freelancerPayment:
           type: string
           enum: [PerMilestones, PerProject]
@@ -91,18 +111,18 @@ components:
           type: array
           description: >
             List of milestones. Required if freelancerPayment is "PerMilestones". Each milestone must include a title,
-            description, due date, and amount.
+            description, due date, and expected hours.
           items:
             $ref: "#/components/schemas/Milestone"
           example:
             - title: "Design Phase"
               description: "Complete the initial design mockups."
               dueDate: "2025-03-01"
-              amount: 500.00
+              expectedHours: 20
             - title: "Development Phase"
               description: "Develop the main features."
               dueDate: "2025-04-15"
-              amount: 1500.00
+              expectedHours: 40
         coverLetter:
           type: string
           description: Cover letter accompanying the job application.
@@ -121,7 +141,7 @@ components:
         - title
         - description
         - dueDate
-        - amount
+        - expectedHours
       properties:
         title:
           type: string
@@ -136,15 +156,15 @@ components:
           format: date
           description: Due date for the milestone (YYYY-MM-DD).
           example: "2025-03-01"
-        amount:
+        expectedHours:
           type: number
           format: double
-          description: Payment amount for the milestone.
-          example: 500.00
+          description: Expected number of hours for the milestone.
+          example: 20
     JobApplicationResponse:
       type: object
       properties:
-        id:
+        type:
           type: string
           description: Unique identifier for the submitted job application.
           example: "1234"

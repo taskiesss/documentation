@@ -4,7 +4,7 @@ info:
   version: "1.0.0"
   description: API for submitting critical freelancer information.
 paths:
-  /freelancer-form:
+  /freelancers/freelancer-form:
     post:
       summary: Submit Freelancer Profile
       description: >
@@ -17,7 +17,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object  
+              type: object
               properties:
                 firstName:
                   type: string
