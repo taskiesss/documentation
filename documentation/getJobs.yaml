@@ -55,11 +55,24 @@ paths:
                   hourlyRange:
                     type: string
                     description: The hourly payment range.
-                  listOfSkills:
+                  skills:
                     type: array
                     description: List of required skills.
                     items:
                       type: string
+                  client:
+                    type: object
+                    description: Details of the client who posted the job.
+                    properties:
+                      completedJobs:
+                        type: integer
+                        description: The total number of completed jobs by the client.
+                      totalSpent:
+                        type: string
+                        description: The total amount spent by the client.
+                      rate:
+                        type: number
+                        description: The client's rating.
                   message:
                     type: string
                     description: A response message.
@@ -77,6 +90,10 @@ paths:
                     experienceLevel: "Intermediate"
                     hourlyRange: "$25"
                     skills: ["UI Design", "UX Design", "Figma", "Adobe XD"]
+                    client:
+                      completedJobs: 150
+                      totalSpent: "$7500"
+                      rate: 4.8
 
         "404":
           description: Job not found.

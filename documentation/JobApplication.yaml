@@ -1,0 +1,166 @@
+openapi: "3.0.0"
+info:
+  title: Job Application API
+  version: "1.0.0"
+  description: API for submitting job applications. Requires authentication.
+servers:
+  - url: http://localhost/
+paths:
+  /ux/freelancer/{jobid}/application:
+    post:
+      summary: Submit a job application
+      description: Create a new job application with job identifier, freelancer payment details, milestones, cover letter, and attachments.
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Job application details payload
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JobApplication"
+            example:
+              jobId: "job-001"
+              freelancerPayment: PerMilestones
+              milestones:
+                - title: "Design Phase"
+                  description: "Complete the initial design mockups."
+                  dueDate: "2025-03-01"
+                  amount: 500.00
+                - title: "Development Phase"
+                  description: "Develop the main features."
+                  dueDate: "2025-04-15"
+                  amount: 1500.00
+              coverLetter: "I am very interested in this job and believe my skills are a perfect match."
+              attachments:
+                - "http://example.com/project.pdf"
+      responses:
+        "201":
+          description: Application successfully submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobApplicationResponse"
+              example:
+                id: "successful"
+                message: "Job application submitted successfully."
+        "400":
+          description: Invalid input provided
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                type: "invalid"
+                message: "Invalid input provided."
+        "401":
+          description: Unauthorized request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                type: "unauthorized"
+                message: "Unauthorized request."
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    JobApplication:
+      type: object
+      required:
+        - jobId
+        - freelancerPayment
+        - coverLetter
+      properties:
+        jobId:
+          type: string
+          description: Identifier of the job for which the application is submitted.
+          example: "job-001"
+        freelancerPayment:
+          type: string
+          enum: [PerMilestones, PerProject]
+          description: >
+            Indicates how the freelancer is paid. Use "PerMilestones" if payment is divided into multiple milestones,
+            or "PerProject" for a one-time payment.
+          example: PerMilestones
+        milestones:
+          type: array
+          description: >
+            List of milestones. Required if freelancerPayment is "PerMilestones". Each milestone must include a title,
+            description, due date, and amount.
+          items:
+            $ref: "#/components/schemas/Milestone"
+          example:
+            - title: "Design Phase"
+              description: "Complete the initial design mockups."
+              dueDate: "2025-03-01"
+              amount: 500.00
+            - title: "Development Phase"
+              description: "Develop the main features."
+              dueDate: "2025-04-15"
+              amount: 1500.00
+        coverLetter:
+          type: string
+          description: Cover letter accompanying the job application.
+          example: "I am very interested in this job and believe my skills are a perfect match."
+        attachments:
+          type: array
+          description: List of attachment URLs related to the application.
+          items:
+            type: string
+            format: uri
+          example:
+            - "http://example.com/project.pdf"
+    Milestone:
+      type: object
+      required:
+        - title
+        - description
+        - dueDate
+        - amount
+      properties:
+        title:
+          type: string
+          description: Title of the milestone.
+          example: "Design Phase"
+        description:
+          type: string
+          description: Detailed description of the milestone.
+          example: "Complete the initial design mockups."
+        dueDate:
+          type: string
+          format: date
+          description: Due date for the milestone (YYYY-MM-DD).
+          example: "2025-03-01"
+        amount:
+          type: number
+          format: double
+          description: Payment amount for the milestone.
+          example: 500.00
+    JobApplicationResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the submitted job application.
+          example: "1234"
+        message:
+          type: string
+          description: A confirmation message.
+          example: "Job application submitted successfully."
+    Error:
+      type: object
+      additionalProperties: false
+      properties:
+        type:
+          type: string
+          description: Error type.
+          example: "invalid"
+        message:
+          type: string
+          description: Detailed error message.
+          example: "Invalid input provided."
