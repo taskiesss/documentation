@@ -86,6 +86,7 @@ components:
         - pricePerHour
         - freelancerPayment
         - coverLetter
+        - milestones
       properties:
         jobId:
           type: string
