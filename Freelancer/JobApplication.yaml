@@ -2,9 +2,11 @@ openapi: "3.0.0"
 info:
   title: Job Application API
   version: "1.0.0"
-  description: API for submitting job applications. Requires authentication.
+  description: API for submitting job applications and retrieving freelancer communities. Requires authentication.
+
 servers:
   - url: http://localhost/
+
 paths:
   /proposals/{jobid}:
     parameters:
@@ -55,22 +57,43 @@ paths:
                 message: "Job application submitted successfully."
         "400":
           description: Invalid input provided
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-              example:
-                type: "invalid"
-                message: "Invalid input provided."
         "401":
           description: Unauthorized request
+
+  /freelancers/{freelancerId}/communities:
+    get:
+      summary: Get communities where the freelancer is the leader
+      description: Retrieves the list of communities led by a specific freelancer.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: freelancerId
+          in: path
+          required: true
+          description: The ID of the freelancer
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response with a list of communities
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-              example:
-                type: "unauthorized"
-                message: "Unauthorized request."
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: "12345"
+                    name:
+                      type: string
+                      example: "Tech Innovators"
+        "401":
+          description: Unauthorized - Invalid or missing token
+        "404":
+          description: Freelancer not found or has no communities
+
 components:
   securitySchemes:
     bearerAuth:
@@ -91,51 +114,31 @@ components:
         jobId:
           type: string
           description: Identifier of the job for which the application is submitted.
-          example: "job-001"
         candidateId:
           type: string
           description: Identifier of the candidate submitting the application.
-          example: "candidate-123"
         pricePerHour:
           type: number
           format: double
           description: Hourly rate for the freelancer.
-          example: 50.00
         freelancerPayment:
           type: string
           enum: [PerMilestones, PerProject]
           description: >
             Indicates how the freelancer is paid. Use "PerMilestones" if payment is divided into multiple milestones,
             or "PerProject" for a one-time payment.
-          example: PerMilestones
         milestones:
           type: array
-          description: >
-            List of milestones. Required if freelancerPayment is "PerMilestones". Each milestone must include a title,
-            description, due date, and expected hours.
           items:
             $ref: "#/components/schemas/Milestone"
-          example:
-            - title: "Design Phase"
-              description: "Complete the initial design mockups."
-              dueDate: "2025-03-01"
-              expectedHours: 20
-            - title: "Development Phase"
-              description: "Develop the main features."
-              dueDate: "2025-04-15"
-              expectedHours: 40
         coverLetter:
           type: string
           description: Cover letter accompanying the job application.
-          example: "I am very interested in this job and believe my skills are a perfect match."
         attachments:
           type: array
-          description: List of attachment URLs related to the application.
           items:
             type: string
             format: uri
-          example:
-            - "http://example.com/project.pdf"
     Milestone:
       type: object
       required:
@@ -147,32 +150,26 @@ components:
         title:
           type: string
           description: Title of the milestone.
-          example: "Design Phase"
         description:
           type: string
           description: Detailed description of the milestone.
-          example: "Complete the initial design mockups."
         dueDate:
           type: string
           format: date
           description: Due date for the milestone (YYYY-MM-DD).
-          example: "2025-03-01"
         expectedHours:
           type: number
           format: double
           description: Expected number of hours for the milestone.
-          example: 20
     JobApplicationResponse:
       type: object
       properties:
         type:
           type: string
           description: Unique identifier for the submitted job application.
-          example: "1234"
         message:
           type: string
           description: A confirmation message.
-          example: "Job application submitted successfully."
     Error:
       type: object
       additionalProperties: false
@@ -180,8 +177,6 @@ components:
         type:
           type: string
           description: Error type.
-          example: "invalid"
         message:
           type: string
           description: Detailed error message.
-          example: "Invalid input provided."
