@@ -34,11 +34,13 @@ paths:
               pricePerHour: 50.00
               freelancerPayment: PerMilestones
               milestones:
-                - title: "Design Phase"
+                - milestoneNumber: 1
+                  title: "Design Phase"
                   description: "Complete the initial design mockups."
                   dueDate: "2025-03-01"
                   expectedHours: 20
-                - title: "Development Phase"
+                - milestoneNumber: 2
+                  title: "Development Phase"
                   description: "Develop the main features."
                   dueDate: "2025-04-15"
                   expectedHours: 40
@@ -63,10 +65,9 @@ paths:
   /freelancers/owned-communities:
     get:
       summary: Get communities where the freelancer is the leader
-      description: Retrieves the list of communities led by a specific freelancer. NOTE -> the first element of the array is allways the freelancer 
+      description: Retrieves the list of communities led by a specific freelancer. NOTE -> the first element of the array is always the freelancer.
       security:
         - bearerAuth: []
-     
       responses:
         "200":
           description: Successful response with a list of communities
@@ -136,11 +137,15 @@ components:
     Milestone:
       type: object
       required:
+        - milestoneNumber
         - title
         - description
         - dueDate
         - expectedHours
       properties:
+        milestoneNumber:
+          type: integer
+          description: Sequential number of the milestone in the project.
         title:
           type: string
           description: Title of the milestone.
