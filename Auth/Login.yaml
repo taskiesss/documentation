@@ -9,7 +9,7 @@ servers:
     description: "Local development server"
 
 paths:
-  /login:
+  /public/login:
     post:
       tags:
         - Login

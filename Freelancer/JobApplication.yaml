@@ -8,7 +8,7 @@ servers:
   - url: http://localhost/
 
 paths:
-  /proposals/{jobid}:
+  /freelancers/proposals/{jobid}:
     parameters:
       - name: jobid
         in: path

@@ -9,7 +9,7 @@ servers:
     description: "Local development server"
 
 paths:
-  /signup/create-account:
+  /public/signup/create-account:
     post:
       tags:
         - Signup
@@ -42,7 +42,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
-  /signup/send-otp:
+  /public/signup/send-otp:
     post:
       tags:
         - Signup
@@ -68,7 +68,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
-  /signup/verify:
+  /public/signup/verify:
     post:
       tags:
         - Signup

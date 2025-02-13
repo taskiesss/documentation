@@ -6,7 +6,7 @@ info:
 servers:
   - url: http://localhost:3000
 paths:
-  /jobs/{id}:
+  /freelancers/jobs/{id}:
     get:
       summary: Get Freelancer Job Details
       description: >
@@ -41,12 +41,21 @@ paths:
                   projectLength:
                     type: string
                     description: The expected duration or length of the project.
+                    enum:
+                      - _less_than_1_month
+                      - _1_to_3_months
+                      - _3_to_6_months
+                      - _more_than_6_months
                   experienceLevel:
                     type: string
                     description: The required experience level.
-                  hourlyRange:
+                    enum:
+                      - entry_level
+                      - intermediate
+                      - expert
+                  expectedPricePerHour:
                     type: string
-                    description: The hourly payment range.
+                    description: The expected hourly payment rate.
                   skills:
                     type: array
                     description: List of required skills.
@@ -78,9 +87,9 @@ paths:
                     projectTitle: "Modern UI/UX Design for Mobile App"
                     postedAt: "2023-10-04T12:34:56Z"
                     projectDescription: "Design a cutting-edge mobile interface with an emphasis on user experience."
-                    projectLength: "3 months"
-                    experienceLevel: "Intermediate"
-                    hourlyRange: "$25"
+                    projectLength: "_1_to_3_months"
+                    experienceLevel: "intermediate"
+                    expectedPricePerHour: "$25"
                     skills: ["UI Design", "UX Design", "Figma", "Adobe XD"]
                     client:
                       completedJobs: 150
@@ -94,15 +103,23 @@ paths:
               schema:
                 type: object
                 properties:
+                  status:
+                    type: string
+                    description: The HTTP status (e.g., "404 NOT_FOUND").
                   message:
                     type: string
                     description: Error message indicating the job was not found.
-                  type:
+                  timStamp:
+                    type: number
+                    description: Unix timestamp or epoch milliseconds when the error occurred.
+                  Type:
                     type: string
-                    description: The error type.
+                    description: The error type (e.g., "NOT_FOUND").
               examples:
                 jobNotFound:
-                  summary: Invalid job id
+                  summary: Invalid job ID
                   value:
+                    status: "404 NOT_FOUND"
                     message: "Job not found."
-                    type: "notFound"
+                    timStamp: 1693662310
+                    Type: "NOT_FOUND"
