@@ -60,7 +60,7 @@ paths:
         "401":
           description: Unauthorized request
 
-  /freelancers/{freelancerId}/communities:
+  /freelancers/{freelancerId}/owned-communities:
     get:
       summary: Get communities where the freelancer is the leader
       description: Retrieves the list of communities led by a specific freelancer. NOTE ---> THE FIRST ELEMENT OF THE ARRAY HAS THE ID OF THE FREELANCER ITSELF (NOT THE SAME AS RETURNED IN THE LOG IN BUT ANOTHER ONE BUT ALSO FOR THE FREELANCER)
