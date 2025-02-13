@@ -18,7 +18,7 @@ paths:
           type: string
     post:
       summary: Submit a job application
-      description: Create a new job application with job identifier, freelancer payment details, milestones, cover letter, and attachments.
+      description: Create a new job application with job identifier, freelancer payment details, milestones, cover letter, and attachment.
       security:
         - bearerAuth: []
       requestBody:
@@ -45,8 +45,7 @@ paths:
                   dueDate: "2025-04-15"
                   expectedHours: 40
               coverLetter: "I am very interested in this job and believe my skills are a perfect match."
-              attachments:
-                - "http://example.com/project.pdf"
+              attachment: "http://example.com/project.pdf"
       responses:
         "201":
           description: Application successfully submitted
@@ -129,11 +128,9 @@ components:
         coverLetter:
           type: string
           description: Cover letter accompanying the job application.
-        attachments:
-          type: array
-          items:
-            type: string
-            format: uri
+        attachment:
+          type: string
+          format: uri
     Milestone:
       type: object
       required:
