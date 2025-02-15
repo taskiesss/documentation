@@ -1,6 +1,6 @@
 openapi: "3.0.0"
 info:
-  title: Job Application API
+  title: Job Proposal API
   version: "1.0.0"
   description: API for submitting job applications and retrieving freelancer communities. Requires authentication.
 
