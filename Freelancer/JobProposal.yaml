@@ -25,27 +25,57 @@ paths:
         description: Job application details payload
         required: true
         content:
-          application/json:
+          multipart/form-data:
             schema:
-              $ref: "#/components/schemas/JobApplication"
+              type: object
+              properties:
+                jobId:
+                  type: string
+                  description: Identifier of the job for which the application is submitted.
+                candidateId:
+                  type: string
+                  description: Identifier of the candidate submitting the application.
+                pricePerHour:
+                  type: number
+                  format: double
+                  description: Hourly rate for the freelancer.
+                freelancerPayment:
+                  type: string
+                  enum: [PerMilestones, PerProject]
+                  description: >
+                    Indicates how the freelancer is paid. Use "PerMilestones" if payment is divided into multiple milestones,
+                    or "PerProject" for a one-time payment.
+                milestones:
+                  type: array
+                  description: Array of milestones, sent as JSON in FormData.
+                  items:
+                    $ref: "#/components/schemas/Milestone"
+                coverLetter:
+                  type: string
+                  description: Cover letter accompanying the job application.
+                attachment:
+                  type: string
+                  format: binary
+                  description: The file attachment for the job application.
+              required:
+                - jobId
+                - candidateId
+                - pricePerHour
+                - freelancerPayment
+                - milestones
+                - coverLetter
+                - attachment
             example:
               jobId: "job-001"
               candidateId: "candidate-123"
               pricePerHour: 50.00
               freelancerPayment: PerMilestones
-              milestones:
-                - milestoneNumber: 1
-                  title: "Design Phase"
-                  description: "Complete the initial design mockups."
-                  dueDate: "2025-03-01"
-                  expectedHours: 20
-                - milestoneNumber: 2
-                  title: "Development Phase"
-                  description: "Develop the main features."
-                  dueDate: "2025-04-15"
-                  expectedHours: 40
+              # Note: The milestones field is expected to be stringified JSON
+              milestones: >
+                [{"milestoneNumber":1,"title":"Design Phase","description":"Complete the initial design mockups.","dueDate":"2025-03-01","expectedHours":20},
+                 {"milestoneNumber":2,"title":"Development Phase","description":"Develop the main features.","dueDate":"2025-04-15","expectedHours":40}]
               coverLetter: "I am very interested in this job and believe my skills are a perfect match."
-              attachment: "http://example.com/project.pdf"
+              attachment: "<Binary file data>"
       responses:
         "201":
           description: Application successfully submitted
