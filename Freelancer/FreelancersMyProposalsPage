@@ -1,0 +1,75 @@
+openapi: 3.0.0
+info:
+  title: Freelancer Proposals API
+  version: 1.0.0
+
+paths:
+  /freelancers/my-proposals:
+    get:
+      summary: Get freelancer's proposals
+      description: Returns a paginated list of proposals made by the freelancer.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProposalsPageDTO'
+        '401':
+          description: Unauthorized (invalid or missing JWT)
+        '404':
+          description: Proposals not found
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    ProposalsPageDTO:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProposalDTO'
+        page:
+          type: integer
+          description: Current page number
+        size:
+          type: integer
+          description: Number of items per page
+        totalElements:
+          type: integer
+          description: Total number of proposals
+        totalPages:
+          type: integer
+          description: Total number of pages
+
+    ProposalDTO:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date-time
+          description: The date when the proposal was made
+        jobTitle:
+          type: string
+          description: The title of the job related to the proposal
+        proposalId:
+          type: string
+          description: The unique identifier for the proposal
+        jobId:
+          type: string
+          description: The unique identifier for the job
+        status:
+          type: string
+          enum: [PENDING, DECLINED, HIRED]
+          description: The current status of the proposal
+        contractId:
+          type: string
+          description: The unique identifier for the contract associated with the proposal (if any)
