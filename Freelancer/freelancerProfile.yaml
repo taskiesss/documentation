@@ -441,4 +441,99 @@ components:
 
     UpdateSkillsRequest:
       type: object
-     
+      properties:
+        skills:
+          type: array
+          items:
+            type: string
+          description: Updated list of skills
+      required:
+        - skills
+
+    UpdatePricePerHourRequest:
+      type: object
+      properties:
+        pricePerHour:
+          type: number
+          format: float
+          description: New hourly rate
+      required:
+        - pricePerHour
+
+    UpdateCountryRequest:
+      type: object
+      properties:
+        country:
+          type: string
+          description: Updated country
+      required:
+        - country
+
+    UpdateAvrgHoursPerWeekRequest:
+      type: object
+      properties:
+        avrgHoursPerWeek:
+          type: number
+          format: float
+          description: New average hours per week
+      required:
+        - avrgHoursPerWeek
+
+    UpdateLanguagesRequest:
+      type: object
+      properties:
+        languages:
+          type: array
+          items:
+            type: string
+          description: Updated list of languages
+      required:
+        - languages
+
+    UpdateEducationsRequest:
+      type: object
+      properties:
+        educations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Education'
+          description: Updated list of educations
+      required:
+        - educations
+
+    UpdateLinkedInRequest:
+      type: object
+      properties:
+        linkedIn:
+          type: string
+          description: Updated LinkedIn URL
+      required:
+        - linkedIn
+
+    UpdateDescriptionRequest:
+      type: object
+      properties:
+        description:
+          type: string
+          description: Updated personal description
+      required:
+        - description
+
+    UpdatePortfolioRequest:
+      type: object
+      properties:
+        portfolio:
+          $ref: '#/components/schemas/Portfolio'
+      required:
+        - portfolio
+
+    UpdateEmployeeHistoryRequest:
+      type: object
+      properties:
+        employeeHistory:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmployeeHistory'
+          description: Updated employment history
+      required:
+        - employeeHistory
