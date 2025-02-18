@@ -28,6 +28,149 @@ paths:
           description: Unauthorized (invalid or missing JWT)
         '404':
           description: Freelancer not found
+          
+  /freelancers/{id}/workdone:
+    get:
+      summary: Get paginated list of works done by freelancer
+      description: Returns a paginated list of works done by the freelancer using their ID.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the freelancer
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: true
+          description: The page number to retrieve (starts at 0)
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+        - name: size
+          in: query
+          required: true
+          description: The number of items per page
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+            maximum: 100
+      responses:
+        '200':
+          description: Successfully retrieved the paginated list of works done
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageableWorksDone'
+        '401':
+          description: Unauthorized (invalid or missing JWT)
+        '404':
+          description: Freelancer not found
+
+  /freelancers/{id}/portfolios:
+    get:
+      summary: Get paginated list of portfolios by freelancer ID
+      description: Returns a paginated list of portfolios for a freelancer using their ID.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the freelancer
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: true
+          description: The page number to retrieve (starts at 0)
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+        - name: size
+          in: query
+          required: true
+          description: The number of items per page
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+            maximum: 100
+      responses:
+        '200':
+          description: Successfully retrieved the paginated list of portfolios
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageablePortfolios'
+        '401':
+          description: Unauthorized (invalid or missing JWT)
+        '404':
+          description: Freelancer not found
+  
+  
+  paths:
+  /freelancers/portfolio:
+    post:
+      summary: Upload a new portfolio for the freelancer
+      description: Upload and create a new portfolio for the freelancer.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PortfolioUploadRequest'
+      responses:
+        '200':
+          description: Portfolio uploaded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FreelancerProfile'
+        '400':
+          description: Bad request (e.g., invalid file format or missing file)
+        '401':
+          description: Unauthorized
+        '404':
+          description: Freelancer not found
+        '415':
+          description: Unsupported media type (only PDF allowed)
+        '500':
+          description: Internal server error
+
+    delete:
+      summary: Delete a portfolio of the freelancer
+      description: Delete the specified portfolio of the freelancer using the portfolio file path.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: filePath
+          in: query
+          required: true
+          description: The path or link to the portfolio to be deleted
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Portfolio deleted successfully
+        '400':
+          description: Bad request (e.g., invalid file path)
+        '401':
+          description: Unauthorized
+        '404':
+          description: Portfolio not found
+        '500':
+          description: Internal server error
+
+
+        
 
   /freelancers/profile-picture:
     patch:
@@ -253,35 +396,6 @@ paths:
         '404':
           description: Freelancer not found
 
-  /freelancers/portfolio:
-    patch:
-      summary: Update the freelancer's portfolio
-      description: Upload and update the freelancer's portfolio PDF file.
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/UpdatePortfolioRequest'
-      responses:
-        '200':
-          description: Portfolio updated successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FreelancerProfile'
-        '400':
-          description: Bad request (e.g., invalid file format or missing file)
-        '401':
-          description: Unauthorized
-        '404':
-          description: Freelancer not found
-        '415':
-          description: Unsupported media type (only PDF allowed)
-        '500':
-          description: Internal server error
 
   /freelancers/employement-history:
     patch:
@@ -368,13 +482,6 @@ components:
         description:
           type: string
           description: Freelancer's personal description
-        portfolio:
-          $ref: '#/components/schemas/Portfolio'
-        worksDone:
-          type: array
-          items:
-            $ref: '#/components/schemas/WorkDone'
-          description: List of completed jobs and associated details
         employeeHistory:
           type: array
           items:
@@ -394,6 +501,61 @@ components:
           type: integer
           description: Year of graduation
 
+    PageablePortfolios:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Portfolio'
+          description: List of portfolios in the current page
+        pageable:
+          type: object
+          properties:
+            sort:
+              type: object
+              properties:
+                unsorted:
+                  type: boolean
+                  description: Whether the results are unsorted
+                sorted:
+                  type: boolean
+                  description: Whether the results are sorted
+                empty:
+                  type: boolean
+                  description: Whether the sort field is empty
+            pageNumber:
+              type: integer
+              format: int32
+              description: The current page number (0-based index)
+            pageSize:
+              type: integer
+              format: int32
+              description: The number of items per page
+            offset:
+              type: integer
+              format: int32
+              description: The offset of the current page
+            unpaged:
+              type: boolean
+              description: Whether the page is unpaged
+        totalElements:
+          type: integer
+          format: int32
+          description: The total number of portfolios
+        totalPages:
+          type: integer
+          format: int32
+          description: The total number of pages available
+        size:
+          type: integer
+          format: int32
+          description: The size of the current page (items per page)
+        number:
+          type: integer
+          format: int32
+          description: The current page number (starts at 0)
+
     Portfolio:
       type: object
       properties:
@@ -403,6 +565,61 @@ components:
         name:
           type: string
           description: Name/title of the portfolio
+
+    PageableWorksDone:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkDone'
+          description: List of works done in the current page
+        pageable:
+          type: object
+          properties:
+            sort:
+              type: object
+              properties:
+                unsorted:
+                  type: boolean
+                  description: Whether the results are unsorted
+                sorted:
+                  type: boolean
+                  description: Whether the results are sorted
+                empty:
+                  type: boolean
+                  description: Whether the sort field is empty
+            pageNumber:
+              type: integer
+              format: int32
+              description: The current page number (0-based index)
+            pageSize:
+              type: integer
+              format: int32
+              description: The number of items per page
+            offset:
+              type: integer
+              format: int32
+              description: The offset of the current page
+            unpaged:
+              type: boolean
+              description: Whether the page is unpaged
+        totalElements:
+          type: integer
+          format: int32
+          description: The total number of `worksDone` items
+        totalPages:
+          type: integer
+          format: int32
+          description: The total number of pages available
+        size:
+          type: integer
+          format: int32
+          description: The size of the current page (items per page)
+        number:
+          type: integer
+          format: int32
+          description: The current page number (starts at 0)
 
     WorkDone:
       type: object
@@ -427,6 +644,14 @@ components:
         clientReview:
           type: string
           description: Review left by the client
+          
+    PortfolioUploadRequest:
+      type: object
+      properties:
+        portfolioFile:
+          type: string
+          format: binary
+          description: The portfolio PDF file to upload (PDF format only).      
 
     EmployeeHistory:
       type: object
