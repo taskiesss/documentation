@@ -32,15 +32,16 @@ paths:
   /freelancers/profile-picture:
     patch:
       summary: Update the freelancer's profile picture
-      description: Update the profile picture of a freelancer.
+      description: Upload a new profile picture for a freelancer.
       security:
         - bearerAuth: []
       requestBody:
         required: true
         content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpdateProfilePictureRequest'
+          multipart/form-data:
+            schema: 
+              $ref: '#/components/schemas/ProfilePictureUploadRequest'
+              
       responses:
         '200':
           description: Profile picture updated successfully
@@ -48,10 +49,17 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FreelancerProfile'
+        '400':
+          description: Bad request (e.g., invalid file format or missing file)
         '401':
           description: Unauthorized
         '404':
           description: Freelancer not found
+        '415':
+          description: Unsupported media type (only images allowed)
+        '500':
+          description: Internal server error
+
 
   /freelancers/skills:
     patch:
@@ -248,13 +256,13 @@ paths:
   /freelancers/portfolio:
     patch:
       summary: Update the freelancer's portfolio
-      description: Update the freelancer's portfolio PDF link/path and name.
+      description: Upload and update the freelancer's portfolio PDF file.
       security:
         - bearerAuth: []
       requestBody:
         required: true
         content:
-          application/json:
+          multipart/form-data:
             schema:
               $ref: '#/components/schemas/UpdatePortfolioRequest'
       responses:
@@ -264,12 +272,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FreelancerProfile'
+        '400':
+          description: Bad request (e.g., invalid file format or missing file)
         '401':
           description: Unauthorized
         '404':
           description: Freelancer not found
+        '415':
+          description: Unsupported media type (only PDF allowed)
+        '500':
+          description: Internal server error
 
-  /freelancers/employee-history:
+  /freelancers/employement-history:
     patch:
       summary: Update the freelancer's employment history
       description: Update the list of positions held by the freelancer.
@@ -429,15 +443,13 @@ components:
           format: date
           description: End date (year) of the position
 
-    UpdateProfilePictureRequest:
+    ProfilePictureUploadRequest:
       type: object
       properties:
         profilePicture:
           type: string
-          format: uri
-          description: New URL or link to the freelancer's profile picture
-      required:
-        - profilePicture
+          format: binary
+          description: The profile picture file to upload (JPEG, PNG, or WEBP).
 
     UpdateSkillsRequest:
       type: object
@@ -522,10 +534,10 @@ components:
     UpdatePortfolioRequest:
       type: object
       properties:
-        portfolio:
-          $ref: '#/components/schemas/Portfolio'
-      required:
-        - portfolio
+        portfolioFile:
+          type: string
+          format: binary
+          description: The portfolio PDF file to upload.
 
     UpdateEmployeeHistoryRequest:
       type: object
