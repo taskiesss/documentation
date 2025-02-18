@@ -34,7 +34,34 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/BadRequestResponse"
+        "500":
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
+  /api/name-and-picture:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Profile
+      summary: "Get user name and profile picture"
+      description: "Returns the user's name and a link to their profile picture. Requires a valid JWT."
+      responses:
+        "200":
+          description: "Successful response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NameAndPictureResponse"
+        "401":
+          description: "Unauthorized - Invalid or missing token."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InvalidCredentialsError"
         "500":
           description: "Internal server error"
           content:
@@ -43,6 +70,12 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   schemas:
     LoginRequest:
       type: object
@@ -66,8 +99,7 @@ components:
           type: string
           example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
         role:
-          type: String 
-          
+          type: string
           example: "ADMIN or FREELANCER or CLIENT"
         isFirst:
           type: boolean
@@ -129,3 +161,17 @@ components:
               example: "An unexpected error occurred. Please try again later."
       required:
         - error
+
+    NameAndPictureResponse:
+      type: object
+      properties:
+        profilePicture:
+          type: string
+          format: uri
+          example: "https://example.com/images/user123.jpg"
+        name:
+          type: string
+          example: "John Doe"
+      required:
+        - profilePicture
+        - name
