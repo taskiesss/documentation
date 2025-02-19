@@ -128,10 +128,6 @@ paths:
       responses:
         '200':
           description: Portfolio uploaded successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FreelancerProfile'
         '400':
           description: Bad request (e.g., invalid file format or missing file)
         '401':
@@ -166,6 +162,7 @@ paths:
           description: Portfolio not found
         '500':
           description: Internal server error
+
 
   /freelancers/profile-picture:
     patch:
