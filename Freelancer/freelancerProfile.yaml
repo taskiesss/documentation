@@ -599,9 +599,7 @@ components:
           type: number
           format: float
           description: Total hours worked on this job
-        clientReview:
-          type: string
-          description: Review left by the client
+      
           
     PortfolioUploadRequest:
       type: object
