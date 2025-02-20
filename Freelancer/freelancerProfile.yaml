@@ -18,17 +18,17 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FreelancerProfile'
-        '401':
+                $ref: "#/components/schemas/FreelancerProfile"
+        "401":
           description: Unauthorized (invalid or missing JWT)
-        '404':
+        "404":
           description: Freelancer not found
-          
+
   /api/freelancers/{id}/workdone:
     get:
       summary: Get paginated list of works done by freelancer
@@ -60,15 +60,15 @@ paths:
             minimum: 1
             maximum: 100
       responses:
-        '200':
+        "200":
           description: Successfully retrieved the paginated list of works done
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PageableWorksDone'
-        '401':
+                $ref: "#/components/schemas/PageableWorksDone"
+        "401":
           description: Unauthorized (invalid or missing JWT)
-        '404':
+        "404":
           description: Freelancer not found
 
   /api/freelancers/{id}/portfolios:
@@ -102,15 +102,15 @@ paths:
             minimum: 1
             maximum: 100
       responses:
-        '200':
+        "200":
           description: Successfully retrieved the paginated list of portfolios
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PageablePortfolios'
-        '401':
+                $ref: "#/components/schemas/PageablePortfolios"
+        "401":
           description: Unauthorized (invalid or missing JWT)
-        '404':
+        "404":
           description: Freelancer not found
 
   /freelancers/portfolio:
@@ -134,19 +134,18 @@ paths:
                   format: binary
                   description: The portfolio file (PDF)
       responses:
-        '200':
+        "200":
           description: Portfolio uploaded successfully
-        '400':
+        "400":
           description: Bad request (e.g., invalid file format or missing file)
-        '401':
+        "401":
           description: Unauthorized
-        '404':
+        "404":
           description: Freelancer not found
-        '415':
+        "415":
           description: Unsupported media type (only PDF allowed)
-        '500':
+        "500":
           description: Internal server error
-
 
     delete:
       summary: Delete a portfolio of the freelancer
@@ -161,17 +160,16 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Portfolio deleted successfully
-        '400':
+        "400":
           description: Bad request (e.g., invalid file path)
-        '401':
+        "401":
           description: Unauthorized
-        '404':
+        "404":
           description: Portfolio not found
-        '500':
+        "500":
           description: Internal server error
-
 
   /freelancers/profile-picture:
     patch:
@@ -183,20 +181,46 @@ paths:
         required: true
         content:
           multipart/form-data:
-            schema: 
-              $ref: '#/components/schemas/ProfilePictureUploadRequest'
+            schema:
+              $ref: "#/components/schemas/ProfilePictureUploadRequest"
       responses:
-        '200':
+        "200":
           description: Profile picture updated successfully
-        '400':
+        "400":
           description: Bad request (e.g., invalid file format or missing file)
-        '401':
+        "401":
           description: Unauthorized
-        '404':
+        "404":
           description: Freelancer not found
-        '415':
+        "415":
           description: Unsupported media type (only images allowed)
-        '500':
+        "500":
+          description: Internal server error
+
+  /freelancers/cover-picture:
+    patch:
+      summary: Update the freelancer's profile picture
+      description: Upload a new profile picture for a freelancer.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/coverPictureUploadRequest"
+      responses:
+        "200":
+          description: Profile picture updated successfully
+        "400":
+          description: Bad request (e.g., invalid file format or missing file)
+        "401":
+          description: Unauthorized
+        "404":
+          description: Freelancer not found
+        "415":
+          description: Unsupported media type (only images allowed)
+        "500":
           description: Internal server error
 
   /freelancers/skills:
@@ -210,53 +234,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateSkillsRequest'
+              $ref: "#/components/schemas/UpdateSkillsRequest"
       responses:
-        '200':
+        "200":
           description: Skills updated successfully
-        '401':
+        "401":
           description: Unauthorized
-        '404':
-          description: Freelancer not found
-
-  /freelancers/price-per-hour:
-    patch:
-      summary: Update the freelancer's hourly rate
-      description: Update the freelancer's price per hour.
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpdatePricePerHourRequest'
-      responses:
-        '200':
-          description: Price per hour updated successfully
-        '401':
-          description: Unauthorized
-        '404':
-          description: Freelancer not found
-
-  /freelancers/country:
-    patch:
-      summary: Update the freelancer's country
-      description: Update the country of a freelancer.
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpdateCountryRequest'
-      responses:
-        '200':
-          description: Country updated successfully
-        '401':
-          description: Unauthorized
-        '404':
+        "404":
           description: Freelancer not found
 
   /freelancers/avrg-hours-per-week:
@@ -270,13 +254,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateAvrgHoursPerWeekRequest'
+              $ref: "#/components/schemas/UpdateAvrgHoursPerWeekRequest"
       responses:
-        '200':
+        "200":
           description: Average hours per week updated successfully
-        '401':
+        "401":
           description: Unauthorized
-        '404':
+        "404":
           description: Freelancer not found
 
   /freelancers/languages:
@@ -290,13 +274,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateLanguagesRequest'
+              $ref: "#/components/schemas/UpdateLanguagesRequest"
       responses:
-        '200':
+        "200":
           description: Languages updated successfully
-        '401':
+        "401":
           description: Unauthorized
-        '404':
+        "404":
           description: Freelancer not found
 
   /freelancers/educations:
@@ -310,13 +294,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateEducationsRequest'
+              $ref: "#/components/schemas/UpdateEducationsRequest"
       responses:
-        '200':
+        "200":
           description: Educations updated successfully
-        '401':
+        "401":
           description: Unauthorized
-        '404':
+        "404":
           description: Freelancer not found
 
   /freelancers/linkedin:
@@ -330,13 +314,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateLinkedInRequest'
+              $ref: "#/components/schemas/UpdateLinkedInRequest"
       responses:
-        '200':
+        "200":
           description: LinkedIn link updated successfully
-        '401':
+        "401":
           description: Unauthorized
-        '404':
+        "404":
           description: Freelancer not found
 
   /freelancers/description:
@@ -350,13 +334,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateDescriptionRequest'
+              $ref: "#/components/schemas/UpdateDescriptionRequest"
       responses:
-        '200':
+        "200":
           description: Description updated successfully
-        '401':
+        "401":
           description: Unauthorized
-        '404':
+        "404":
           description: Freelancer not found
 
   /freelancers/employement-history:
@@ -370,13 +354,32 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateEmployeeHistoryRequest'
+              $ref: "#/components/schemas/UpdateEmployeeHistoryRequest"
       responses:
-        '200':
+        "200":
           description: Employment history updated successfully
-        '401':
+        "401":
           description: Unauthorized
-        '404':
+        "404":
+          description: Freelancer not found
+  /freelancers/header-section:
+    patch:
+      summary: Update the freelancer's header section
+      description: Update the freelancer's first name, last name, job title, country, and price per hour.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateHeaderSectionRequest"
+      responses:
+        "200":
+          description: Header section updated successfully
+        "401":
+          description: Unauthorized
+        "404":
           description: Freelancer not found
 
 components:
@@ -385,8 +388,32 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
-
   schemas:
+    UpdateHeaderSectionRequest:
+      type: object
+      properties:
+        firstName:
+          type: string
+          description: The freelancer's first name.
+        lastName:
+          type: string
+          description: The freelancer's last name.
+        jobTitle:
+          type: string
+          description: The freelancer's job title.
+        country:
+          type: string
+          description: Updated country of residence.
+        pricePerHour:
+          type: number
+          format: float
+          description: Updated hourly rate.
+      required:
+        - firstName
+        - lastName
+        - jobTitle
+        - country
+        - pricePerHour
     FreelancerProfile:
       type: object
       properties:
@@ -432,7 +459,7 @@ components:
         educations:
           type: array
           items:
-            $ref: '#/components/schemas/Education'
+            $ref: "#/components/schemas/Education"
           description: List of educational backgrounds
         linkedIn:
           type: string
@@ -443,8 +470,18 @@ components:
         employeeHistory:
           type: array
           items:
-            $ref: '#/components/schemas/EmployeeHistory'
+            $ref: "#/components/schemas/EmployeeHistory"
           description: List of previous positions held by the freelancer
+        experienceLevel:
+          type: string
+          enum:
+            - entry_level
+            - intermediate
+            - expert
+          description: The freelancer's experience level
+        coverPhoto:
+          type: string
+          description: URL or link to the freelancer's cover photo
 
     Education:
       type: object
@@ -465,7 +502,7 @@ components:
         content:
           type: array
           items:
-            $ref: '#/components/schemas/Portfolio'
+            $ref: "#/components/schemas/Portfolio"
           description: List of portfolios in the current page
         pageable:
           type: object
@@ -530,7 +567,7 @@ components:
         content:
           type: array
           items:
-            $ref: '#/components/schemas/WorkDone'
+            $ref: "#/components/schemas/WorkDone"
           description: List of works done in the current page
         pageable:
           type: object
@@ -587,7 +624,7 @@ components:
           description: Name of the job completed
         jobId:
           type: string
-          description: Name of the job completed  
+          description: Name of the job completed
         rate:
           type: number
           format: float
@@ -602,8 +639,7 @@ components:
           type: number
           format: float
           description: Total hours worked on this job
-      
-          
+
     PortfolioUploadRequest:
       type: object
       properties:
@@ -634,6 +670,14 @@ components:
       type: object
       properties:
         profilePicture:
+          type: string
+          format: binary
+          description: The profile picture file to upload (JPEG, PNG, or WEBP).
+
+    coverPictureUploadRequest:
+      type: object
+      properties:
+        coverPicture:
           type: string
           format: binary
           description: The profile picture file to upload (JPEG, PNG, or WEBP).
@@ -695,7 +739,7 @@ components:
         educations:
           type: array
           items:
-            $ref: '#/components/schemas/Education'
+            $ref: "#/components/schemas/Education"
           description: Updated list of educations
       required:
         - educations
@@ -732,7 +776,7 @@ components:
         employeeHistory:
           type: array
           items:
-            $ref: '#/components/schemas/EmployeeHistory'
+            $ref: "#/components/schemas/EmployeeHistory"
           description: Updated employment history
       required:
         - employeeHistory
