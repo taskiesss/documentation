@@ -423,6 +423,9 @@ components:
         profilePicture:
           type: string
           description: URL or link to the freelancer's profile picture
+        jobTitle:
+          type: string
+          description: The freelancer's job title.
         name:
           type: string
           description: Freelancer's full name
