@@ -1,122 +1,39 @@
-openapi: "3.0.0"
+openapi: 3.0.0
 info:
-  title: Job Proposal API
-  version: "1.0.0"
-  description: API for submitting job applications and retrieving freelancer communities. Requires authentication.
-
-servers:
-  - url: http://localhost/
+  title: Freelancer Proposals API
+  version: 1.0.0
 
 paths:
-  /freelancers/proposals/{jobid}:
-    parameters:
-      - name: jobid
-        in: path
-        required: true
-        description: Dynamic identifier for the job.
-        schema:
-          type: string
-    post:
-      summary: Submit a job application
-      description: Create a new job application with job identifier, freelancer payment details, milestones, cover letter, and attachment.
-      security:
-        - bearerAuth: []
-      requestBody:
-        description: Job application details payload
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                jobId:
-                  type: string
-                  description: Identifier of the job for which the application is submitted.
-                candidateId:
-                  type: string
-                  description: Identifier of the candidate submitting the application.
-                pricePerHour:
-                  type: number
-                  format: double
-                  description: Hourly rate for the freelancer.
-                freelancerPayment:
-                  type: string
-                  enum: [PerMilestones, PerProject]
-                  description: >
-                    Indicates how the freelancer is paid. Use "PerMilestones" if payment is divided into multiple milestones,
-                    or "PerProject" for a one-time payment.
-                milestones:
-                  type: array
-                  description: Array of milestones, sent as JSON in FormData.
-                  items:
-                    $ref: "#/components/schemas/Milestone"
-                coverLetter:
-                  type: string
-                  description: Cover letter accompanying the job application.
-                attachment:
-                  type: string
-                  format: binary
-                  description: The file attachment for the job application.
-              required:
-                - jobId
-                - candidateId
-                - pricePerHour
-                - freelancerPayment
-                - milestones
-                - coverLetter
-                - attachment
-            example:
-              jobId: "job-001"
-              candidateId: "candidate-123"
-              pricePerHour: 50.00
-              freelancerPayment: PerMilestones
-              # Note: The milestones field is expected to be stringified JSON
-              milestones: >
-                [{"milestoneNumber":1,"title":"Design Phase","description":"Complete the initial design mockups.","dueDate":"2025-03-01","expectedHours":20},
-                 {"milestoneNumber":2,"title":"Development Phase","description":"Develop the main features.","dueDate":"2025-04-15","expectedHours":40}]
-              coverLetter: "I am very interested in this job and believe my skills are a perfect match."
-              attachment: "<Binary file data>"
-      responses:
-        "201":
-          description: Application successfully submitted
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/JobApplicationResponse"
-              example:
-                type: "successful"
-                message: "Job application submitted successfully."
-        "400":
-          description: Invalid input provided
-        "401":
-          description: Unauthorized request
-
-  /freelancers/owned-communities:
+  /freelancers/my-proposals:
     get:
-      summary: Get communities where the freelancer is the leader
-      description: Retrieves the list of communities led by a specific freelancer. NOTE -> the first element of the array is always the freelancer.
+      summary: Get freelancer's proposals
+      description: Returns a paginated list of proposals made by the freelancer.
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            description: The page number to retrieve.
+            default: 1
+        - in: query
+          name: size
+          schema:
+            type: integer
+            description: The number of items per page.
+            default: 10
       security:
         - bearerAuth: []
       responses:
-        "200":
-          description: Successful response with a list of communities
+        '200':
+          description: Successful operation
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                      example: "12345"
-                    name:
-                      type: string
-                      example: "Tech Innovators"
-        "401":
-          description: Unauthorized - Invalid or missing token
-        "404":
-          description: Freelancer not found or has no communities
+                $ref: '#/components/schemas/ProposalsPageDTO'
+        '401':
+          description: Unauthorized (invalid or missing JWT)
+        '404':
+          description: Proposals not found
 
 components:
   securitySchemes:
@@ -124,85 +41,48 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
+
   schemas:
-    JobApplication:
+    ProposalsPageDTO:
       type: object
-      required:
-        - jobId
-        - candidateId
-        - pricePerHour
-        - freelancerPayment
-        - coverLetter
-        - milestones
       properties:
-        jobId:
-          type: string
-          description: Identifier of the job for which the application is submitted.
-        candidateId:
-          type: string
-          description: Identifier of the candidate submitting the application.
-        pricePerHour:
-          type: number
-          format: double
-          description: Hourly rate for the freelancer.
-        freelancerPayment:
-          type: string
-          enum: [PerMilestones, PerProject]
-          description: >
-            Indicates how the freelancer is paid. Use "PerMilestones" if payment is divided into multiple milestones,
-            or "PerProject" for a one-time payment.
-        milestones:
+        content:
           type: array
           items:
-            $ref: "#/components/schemas/Milestone"
-        coverLetter:
-          type: string
-          description: Cover letter accompanying the job application.
-        attachment:
-          type: string
-          format: uri
-    Milestone:
-      type: object
-      required:
-        - milestoneNumber
-        - title
-        - description
-        - dueDate
-        - expectedHours
-      properties:
-        milestoneNumber:
+            $ref: '#/components/schemas/ProposalDTO'
+        page:
           type: integer
-          description: Sequential number of the milestone in the project.
-        title:
-          type: string
-          description: Title of the milestone.
-        description:
-          type: string
-          description: Detailed description of the milestone.
-        dueDate:
-          type: string
-          format: date
-          description: Due date for the milestone (YYYY-MM-DD).
-        expectedHours:
-          type: number
-          format: double
-          description: Expected number of hours for the milestone.
-    JobApplicationResponse:
+          description: Current page number
+        size:
+          type: integer
+          description: Number of items per page
+        totalElements:
+          type: integer
+          description: Total number of proposals
+        totalPages:
+          type: integer
+          description: Total number of pages
+
+    ProposalDTO:
       type: object
       properties:
-        type:
+        date:
           type: string
-          description: Unique identifier for the submitted job application.
-        message:
+          format: date-time
+          description: The date when the proposal was made
+        jobTitle:
           type: string
-          description: A confirmation message.
-    Error:
-      type: object
-      additionalProperties: false
-      properties:
-        type:
+          description: The title of the job related to the proposal
+        proposalId:
           type: string
-          description: Error type.
-        message:
+          description: The unique identifier for the proposal
+        jobId:
           type: string
-          description: Detailed error message.
+          description: The unique identifier for the job
+        status:
+          type: string
+          enum: [PENDING, DECLINED, HIRED]
+          description: The current status of the proposal
+        contractId:
+          type: string
+          description: The unique identifier for the contract associated with the proposal (if any)
