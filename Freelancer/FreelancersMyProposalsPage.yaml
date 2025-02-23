@@ -8,6 +8,19 @@ paths:
     get:
       summary: Get freelancer's proposals
       description: Returns a paginated list of proposals made by the freelancer.
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            description: The page number to retrieve.
+            default: 1
+        - in: query
+          name: size
+          schema:
+            type: integer
+            description: The number of items per page.
+            default: 10
       security:
         - bearerAuth: []
       responses:
