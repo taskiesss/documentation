@@ -38,6 +38,10 @@ paths:
                   projectDescription:
                     type: string
                     description: A detailed description of the project.
+                  canApply:
+                    type: boolean
+                    description: A detailed description of the project
+                  
                   projectLength:
                     type: string
                     description: The expected duration or length of the project.
@@ -90,6 +94,7 @@ paths:
                     projectLength: "_1_to_3_months"
                     experienceLevel: "intermediate"
                     expectedPricePerHour: "$25"
+                    canApply : true
                     skills: ["UI Design", "UX Design", "Figma", "Adobe XD"]
                     client:
                       completedJobs: 150
