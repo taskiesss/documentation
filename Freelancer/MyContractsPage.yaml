@@ -39,7 +39,7 @@ paths:
                   enum: [ASC, DESC]
                   description: Sorting direction
       responses:
-        '200':
+        "200":
           description: A page of freelancer contracts
           content:
             application/json:
@@ -79,6 +79,11 @@ paths:
                           format: date
                         dueDate:
                           type: string
+                          format: date
+                        endDate:
+                          type: string
+                          description: Define the date of when the project ends (return present if still active or return date if ended)
+                          enum: [present, date]
                           format: date
                   totalElements:
                     type: integer
