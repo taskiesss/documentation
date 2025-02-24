@@ -132,6 +132,11 @@ paths:
       description: Upload a new profile picture for a community. Only admins can perform this action.
       security:
         - bearerAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProfilePictureUploadRequest'
       responses:
         "403":
           description: Forbidden – Only community admins can update this resource.
@@ -149,6 +154,11 @@ paths:
       description: Upload a new cover picture for a community. Only admins can perform this action.
       security:
         - bearerAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CoverPictureUploadRequest'
       responses:
         "403":
           description: Forbidden – Only community admins can update this resource.
@@ -166,6 +176,11 @@ paths:
       description: Update the skills associated with a community. Only admins can perform this action.
       security:
         - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSkillsRequest'
       responses:
         "403":
           description: Forbidden – Only community admins can update this resource.
@@ -183,6 +198,11 @@ paths:
       description: Update the description of a community. Only admins can perform this action.
       security:
         - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDescriptionRequest'
       responses:
         "403":
           description: Forbidden – Only community admins can update this resource.
@@ -200,6 +220,11 @@ paths:
       description: Update the community's name, job title, country, and price per hour. Only admins can perform this action.
       security:
         - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateHeaderSectionRequest'
       responses:
         "403":
           description: Forbidden – Only community admins can update this resource.
