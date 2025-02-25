@@ -293,7 +293,7 @@ components:
     UpdateHeaderSectionRequest:
       type: object
       properties:
-        name:
+        firstName:
           type: string
           description: The community's name.
         jobTitle:
