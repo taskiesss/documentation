@@ -74,9 +74,7 @@ components:
         endDate:
           type: string
           description: Date when the contract ended or "present" if still active
-          example:
-            - "present"
-            - "2025-03-15"
+
         milestones:
           type: array
           items:
