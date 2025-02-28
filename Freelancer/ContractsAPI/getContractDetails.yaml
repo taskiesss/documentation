@@ -1,0 +1,114 @@
+openapi: 3.0.0
+info:
+  title: Freelancer Contract API
+  version: 1.0.0
+paths:
+  /freelancers/my-contracts/{id}:
+    get:
+      summary: Get details of a specific contract for a freelancer
+      description: Retrieves detailed information about a specific contract including status, job details, client info, and milestones.
+      operationId: getMyContractById
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the contract to retrieve
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response with contract details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Contract"
+        "401":
+          description: Unauthorized - Invalid or missing token
+        "404":
+          description: Contract not found
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Contract:
+      type: object
+      required:
+        - contractStatus
+        - jobId
+        - clientName
+        - profilePic
+        - pricePerHour
+        - startDate
+        - endDate
+        - milestones
+      properties:
+        contractStatus:
+          type: string
+          enum: [active, ended]
+          description: Current status of the contract
+        jobId:
+          type: string
+          description: ID of the job associated with the contract
+        clientName:
+          type: string
+          description: Name of the client
+        profilePic:
+          type: string
+          format: uri
+          description: URL to the client's profile picture
+        pricePerHour:
+          type: number
+          format: float
+          description: Hourly rate for the contract
+        startDate:
+          type: string
+          format: date
+          description: Date when the contract started
+        endDate:
+          type: string
+          description: Date when the contract ended or "present" if still active
+          example:
+            - "present"
+            - "2025-03-15"
+        milestones:
+          type: array
+          items:
+            $ref: "#/components/schemas/Milestone"
+
+    Milestone:
+      type: object
+      required:
+        - title
+        - description
+        - expectedHours
+        - dueDate
+        - status
+        - milestoneId
+      properties:
+        title:
+          type: string
+          description: Title of the milestone
+        description:
+          type: string
+          description: Description of the milestone
+        expectedHours:
+          type: number
+          description: Expected hours to complete the milestone
+        dueDate:
+          type: string
+          format: date
+          description: Due date for the milestone
+        status:
+          type: string
+          enum: [not_started, in_review, in_progress, approved]
+          description: Current status of the milestone
+        milestoneId:
+          type: string
+          description: Unique identifier for the milestone
