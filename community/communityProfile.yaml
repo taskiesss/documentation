@@ -86,38 +86,12 @@ paths:
             type: integer
             minimum: 1
       responses:
-        '200':
-          description: A page of work done
+        "200":
+          description: Successfully retrieved the paginated list of works done
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  content:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        jobName:
-                          type: string
-                        jobId:
-                          type: string
-                        rate:
-                          type: integer
-                          minimum: 0
-                          maximum: 5
-                        pricePerHour:
-                          type: number
-                        totalHours:
-                          type: integer
-                  totalElements:
-                    type: integer
-                  totalPages:
-                    type: integer
-                  size:
-                    type: integer
-                  number:
-                    type: integer
+                $ref: "#/components/schemas/PageableWorksDone"
 
   /communities/{id}/profile-picture:
     patch:
@@ -236,10 +210,90 @@ components:
       scheme: bearer
       bearerFormat: JWT
   schemas:
+    PageableWorksDone:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/WorkDone"
+          description: List of works done in the current page
+        pageable:
+          type: object
+          properties:
+            sort:
+              type: object
+              properties:
+                unsorted:
+                  type: boolean
+                  description: Whether the results are unsorted
+                sorted:
+                  type: boolean
+                  description: Whether the results are sorted
+                empty:
+                  type: boolean
+                  description: Whether the sort field is empty
+            pageNumber:
+              type: integer
+              format: int32
+              description: The current page number (0-based index)
+            pageSize:
+              type: integer
+              format: int32
+              description: The number of items per page
+            offset:
+              type: integer
+              format: int32
+              description: The offset of the current page
+            unpaged:
+              type: boolean
+              description: Whether the page is unpaged
+        totalElements:
+          type: integer
+          format: int32
+          description: The total number of `worksDone` items
+        totalPages:
+          type: integer
+          format: int32
+          description: The total number of pages available
+        size:
+          type: integer
+          format: int32
+          description: The size of the current page (items per page)
+        number:
+          type: integer
+          format: int32
+          description: The current page number (starts at 0)
+          
+    WorkDone:
+      type: object
+      properties:
+        jobName:
+          type: string
+          description: Name of the job completed
+        jobId:
+          type: string
+          description: Name of the job completed
+        rate:
+          type: number
+          format: float
+          description: Rating given by the client after finishing the job
+          minimum: 0
+          maximum: 5
+        pricePerHour:
+          type: number
+          format: float
+          description: Hourly rate charged for this job
+        totalHours:
+          type: number
+          format: float
+          description: Total hours worked on this job      
+    
+    
     UpdateHeaderSectionRequest:
       type: object
       properties:
-        name:
+        firstName:
           type: string
           description: The community's name.
         jobTitle:

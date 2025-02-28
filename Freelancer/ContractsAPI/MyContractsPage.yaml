@@ -69,7 +69,7 @@ paths:
                           format: double
                         activeMilestone:
                           type: string
-                        rate:
+                        clientRateForFreelancer:
                           type: number
                           format: float
                           minimum: 0
