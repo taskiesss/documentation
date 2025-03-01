@@ -56,6 +56,9 @@ components:
         jobId:
           type: string
           description: ID of the job associated with the contract
+        jobTitle:
+          type: string
+          description: Title of the job associated with the contract
         clientName:
           type: string
           description: Name of the client
@@ -67,6 +70,14 @@ components:
           type: number
           format: float
           description: Hourly rate for the contract
+        totalCurrentEarnings:
+          type: number
+          format: float
+          description: Total earnings accumulated for the contract so far
+        hoursWorked:
+          type: number
+          format: float
+          description: Total hours worked on the contract to date
         startDate:
           type: string
           format: date
@@ -74,7 +85,10 @@ components:
         endDate:
           type: string
           description: Date when the contract ended or "present" if still active
-
+        projectType:
+          type: string
+          enum: [PerMilestones, PerProject]
+          description: Type of project billing structure (Per Milestones or Per Project)
         milestones:
           type: array
           items:
