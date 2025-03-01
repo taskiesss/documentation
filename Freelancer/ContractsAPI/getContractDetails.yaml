@@ -159,18 +159,53 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Milestone"
+        pageable:
+          type: object
+          properties:
+            sort:
+              type: object
+              properties:
+                unsorted:
+                  type: boolean
+                  description: Whether the results are unsorted
+                sorted:
+                  type: boolean
+                  description: Whether the results are sorted
+                empty:
+                  type: boolean
+                  description: Whether the sort field is empty
+            pageNumber:
+              type: integer
+              format: int32
+              description: The current page number (0-based index)
+            pageSize:
+              type: integer
+              format: int32
+              description: The number of items per page
+            offset:
+              type: integer
+              format: int32
+              description: The offset of the current page
+            unpaged:
+              type: boolean
+              description: Whether the page is unpaged
         totalElements:
           type: integer
-          description: Total number of milestones available
+          format: int32
+          description: The total number of `worksDone` items
         totalPages:
           type: integer
-          description: Total pages available
+          format: int32
+          description: The total number of pages available
         size:
           type: integer
-          description: Number of milestones per page
+          format: int32
+          description: The size of the current page (items per page)
         number:
           type: integer
-          description: Current page number
+          format: int32
+          description: The current page number (starts at 0)
+          
 
     Milestone:
       type: object
