@@ -23,7 +23,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Contract"
+                $ref: "#/components/schemas/ContractResponse"
         "401":
           description: Unauthorized - Invalid or missing token
         "404":
@@ -37,6 +37,17 @@ components:
       bearerFormat: JWT
 
   schemas:
+    ContractResponse:
+      type: object
+      required:
+        - contract
+        - milestones
+      properties:
+        contract:
+          $ref: "#/components/schemas/Contract"
+        milestones:
+          $ref: "#/components/schemas/PageMilestone"
+
     Contract:
       type: object
       required:
@@ -47,7 +58,6 @@ components:
         - pricePerHour
         - startDate
         - endDate
-        - milestones
         - jobTitle
         - projectType
         - totalCurrentEarnings
@@ -93,10 +103,32 @@ components:
           type: string
           enum: [PerMilestones, PerProject]
           description: Type of project billing structure (Per Milestones or Per Project)
-        milestones:
+
+    PageMilestone:
+      type: object
+      required:
+        - content
+        - totalElements
+        - totalPages
+        - size
+        - number
+      properties:
+        content:
           type: array
           items:
             $ref: "#/components/schemas/Milestone"
+        totalElements:
+          type: integer
+          description: Total number of milestones available
+        totalPages:
+          type: integer
+          description: Total pages available
+        size:
+          type: integer
+          description: Number of milestones per page
+        number:
+          type: integer
+          description: Current page number
 
     Milestone:
       type: object
