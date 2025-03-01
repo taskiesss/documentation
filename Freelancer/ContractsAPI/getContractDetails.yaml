@@ -6,7 +6,7 @@ paths:
   /freelancers/my-contracts/{id}:
     get:
       summary: Get details of a specific contract for a freelancer
-      description: Retrieves detailed information about a specific contract including status, job details, client info, and milestones.
+      description: Retrieves detailed information about a specific contract including status, job details, client info.
       operationId: getMyContractById
       security:
         - bearerAuth: []
@@ -15,6 +15,32 @@ paths:
           in: path
           required: true
           description: The ID of the contract to retrieve
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response with contract details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Contract"
+        "401":
+          description: Unauthorized - Invalid or missing token
+        "404":
+          description: Contract not found
+
+  /freelancers/my-contracts/{id}/milestones:
+    get:
+      summary: Get milestones of a specific contract
+      description: Retrieves the list of milestones for a specific contract with pagination.
+      operationId: getMyContractMilestones
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the contract to retrieve milestones for
           schema:
             type: string
         - name: page
@@ -36,15 +62,15 @@ paths:
             maximum: 100
       responses:
         "200":
-          description: Successful response with contract details
+          description: Successful response with milestones details
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ContractResponse"
+                $ref: "#/components/schemas/PageMilestone"
         "401":
           description: Unauthorized - Invalid or missing token
         "404":
-          description: Contract not found
+          description: Contract or milestones not found
 
 components:
   securitySchemes:
@@ -54,17 +80,6 @@ components:
       bearerFormat: JWT
 
   schemas:
-    ContractResponse:
-      type: object
-      required:
-        - contract
-        - milestones
-      properties:
-        contract:
-          $ref: "#/components/schemas/Contract"
-        milestones:
-          $ref: "#/components/schemas/PageMilestone"
-
     Contract:
       type: object
       required:
@@ -99,11 +114,11 @@ components:
           description: URL to the client's profile picture
         freelancerName:
           type: string
-          description: Name of the client
+          description: Name of the freelancer
         freelancerProfilePic:
           type: string
           format: uri
-          description: URL to the client's profile picture
+          description: URL to the freelancer's profile picture
         pricePerHour:
           type: number
           format: float
@@ -125,7 +140,7 @@ components:
           description: Date when the contract ended or "present" if still active
         isCommunity:
           type: boolean
-          description: if the freelancer is community return true
+          description: If the freelancer is part of a community
         projectType:
           type: string
           enum: [PerMilestones, PerProject]
