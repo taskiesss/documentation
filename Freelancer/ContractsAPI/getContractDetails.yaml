@@ -76,7 +76,14 @@ components:
         clientName:
           type: string
           description: Name of the client
-        profilePic:
+        clientProfilePic:
+          type: string
+          format: uri
+          description: URL to the client's profile picture
+        freelancerName:
+          type: string
+          description: Name of the client
+        freelancerProfilePic:
           type: string
           format: uri
           description: URL to the client's profile picture
@@ -99,6 +106,9 @@ components:
         endDate:
           type: string
           description: Date when the contract ended or "present" if still active
+        isCommunity:
+          type: boolean
+          description: if the freelancer is community return true
         projectType:
           type: string
           enum: [PerMilestones, PerProject]
