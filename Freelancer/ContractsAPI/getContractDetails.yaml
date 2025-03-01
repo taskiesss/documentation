@@ -48,6 +48,10 @@ components:
         - startDate
         - endDate
         - milestones
+        - jobTitle
+        - projectType
+        - totalCurrentEarnings
+        - hoursWorked
       properties:
         contractStatus:
           type: string
