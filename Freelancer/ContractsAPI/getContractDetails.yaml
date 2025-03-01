@@ -105,6 +105,9 @@ components:
         jobTitle:
           type: string
           description: Title of the job associated with the contract
+        clientId:
+          type: string
+          description: Name of the client
         clientName:
           type: string
           description: Name of the client
@@ -112,6 +115,9 @@ components:
           type: string
           format: uri
           description: URL to the client's profile picture
+        freelancerId:
+          type: string
+          description: Name of the client
         freelancerName:
           type: string
           description: Name of the freelancer
@@ -205,7 +211,6 @@ components:
           type: integer
           format: int32
           description: The current page number (starts at 0)
-          
 
     Milestone:
       type: object
