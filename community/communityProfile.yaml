@@ -54,6 +54,10 @@ paths:
                           type: string
                         position:
                           type: string
+                        freelancerId:
+                          type: string
+                        freelancerProfilePicture:
+                          type: string  
                   isFull:
                     type: boolean
                   isMember:
