@@ -3,7 +3,7 @@ info:
   title: Freelancer Contract API
   version: 1.0.0
 paths:
-  /freelancers/my-contracts/{id}:
+  /api/contracts/{id}:
     get:
       summary: Get details of a specific contract for a freelancer
       description: Retrieves detailed information about a specific contract including status, job details, client info.
@@ -29,7 +29,7 @@ paths:
         "404":
           description: Contract not found
 
-  /freelancers/my-contracts/{id}/milestones:
+  /api/contracts/{id}/milestones:
     get:
       summary: Get milestones of a specific contract
       description: Retrieves the list of milestones for a specific contract with pagination.
