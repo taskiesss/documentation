@@ -1,0 +1,181 @@
+openapi: 3.0.0
+info:
+  title: Submission API
+  description: API for managing milestone submissions
+  version: 1.0.0
+servers:
+  - url: https://api.example.com
+    description: Production server
+paths:
+  /api/contracts/{contractId}/milestones/{milestoneIndex}/submission:
+    get:
+      summary: Fetch submission data for a milestone
+      description: Retrieve the submission details (description, files, and links) for a specific milestone.
+      parameters:
+        - name: contractId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the contract.
+        - name: milestoneIndex
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the milestone.
+      responses:
+        "200":
+          description: Submission data retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Submission"
+        "403":
+          description: Forbidden - User is not authorized to access this resource
+        "404":
+          description: Submission not found for the given milestone
+        "500":
+          description: Internal server error
+      security:
+        - BearerAuth: []
+  /api/contracts/{contractId}/milestones/{milestoneIndex}/add:
+    post:
+      summary: Update submission data for a milestone
+      description: Update the submission details (description, files, and links) for a specific milestone.
+      parameters:
+        - name: contractId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the contract.
+        - name: milestoneIndex
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the milestone.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+                  description: Updated description of the submission
+                files:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                  description: New files to be added to the submission
+                links:
+                  type: string
+                  description: JSON string of new links to be added to the submission
+      responses:
+        "200":
+          description: Submission updated successfully
+        "400":
+          description: Bad request - Invalid input data
+        "403":
+          description: Forbidden - User is not authorized to update this resource
+        "500":
+          description: Internal server error
+      security:
+        - BearerAuth: []
+  /api/contracts/{contractId}/milestones/{milestoneIndex}/{type}/{id}:
+    delete:
+      summary: Delete a file or link from a submission
+      description: Delete a specific file or link from the submission of a milestone.
+      parameters:
+        - name: contractId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the contract.
+        - name: milestoneIndex
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the milestone.
+        - name: type
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [file, link]
+          description: The type of resource to delete (`file` or `link`).
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the file or link to delete.
+      responses:
+        "200":
+          description: File or link deleted successfully
+        "403":
+          description: Forbidden - User is not authorized to delete this resource
+        "404":
+          description: File or link not found
+        "500":
+          description: Internal server error
+      security:
+        - BearerAuth: []
+components:
+  schemas:
+    Submission:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the submission
+        description:
+          type: string
+          description: Description of the submission
+        files:
+          type: array
+          items:
+            $ref: "#/components/schemas/File"
+          description: List of files associated with the submission
+        links:
+          type: array
+          items:
+            $ref: "#/components/schemas/Link"
+          description: List of links associated with the submission
+    File:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the file
+        url:
+          type: string
+          format: uri
+          description: URL to download the file
+        name:
+          type: string
+          description: Name of the file
+    Link:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the link
+        url:
+          type: string
+          format: uri
+          description: URL of the link
+        name:
+          type: string
+          description: Name of the link
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
