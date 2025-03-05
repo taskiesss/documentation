@@ -63,9 +63,6 @@ paths:
             schema:
               type: object
               properties:
-                description:
-                  type: string
-                  description: Updated description of the submission
                 files:
                   type: array
                   items:
@@ -132,12 +129,6 @@ components:
     Submission:
       type: object
       properties:
-        id:
-          type: string
-          description: Unique identifier for the submission
-        description:
-          type: string
-          description: Description of the submission
         files:
           type: array
           items:
