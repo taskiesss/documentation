@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Finance Transactions API
-  description: API for managing financial transactions on a freelancing platform.
+  description: API for managing financial transactions and user profiles on a freelancing platform.
   version: 1.0.0
 servers:
   - url: /api
@@ -11,7 +11,7 @@ paths:
   /finance/transactions:
     post:
       summary: Retrieve a list of transactions
-      description: Fetches a paginated list of financial transactions for the authenticated user using filters provided in the request body. Includes user details such as profile picture, name, and total balance. Filtering supports date range (startDate, endDate), transaction type, and pagination.
+      description: Fetches a paginated list of financial transactions for the authenticated user using filters provided in the request body. Filtering supports date range (startDate, endDate), transaction type, and pagination.
       tags:
         - Transactions
       requestBody:
@@ -23,7 +23,7 @@ paths:
               $ref: "#/components/schemas/TransactionFilter"
       responses:
         "200":
-          description: Successfully retrieved the list of transactions along with user details
+          description: Successfully retrieved the list of transactions
           content:
             application/json:
               schema:
@@ -34,6 +34,34 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized - User is not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      security:
+        - bearerAuth: []
+
+  /finance/profile:
+    get:
+      summary: Retrieve the user profile
+      description: Fetches the profile details of the authenticated user, including profile picture, name, and total balance.
+      tags:
+        - User
+      responses:
+        "200":
+          description: Successfully retrieved the user profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserProfile"
         "401":
           description: Unauthorized - User is not authenticated
           content:
@@ -89,11 +117,8 @@ components:
     TransactionResponse:
       type: object
       required:
-        - userProfile
         - transactions
       properties:
-        userProfile:
-          $ref: "#/components/schemas/UserProfile"
         transactions:
           $ref: "#/components/schemas/Transactions"
     Transactions:
