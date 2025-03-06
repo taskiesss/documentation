@@ -72,14 +72,14 @@ paths:
                   last:
                     type: boolean
 
-  /freelancers/communities/{communityid}/offers:
+  /freelancers/communities/{communityId}/offers:
     get:
       summary: Get offers for a community
       security:
         - bearerAuth: []
       description: Requires JWT authentication. The user must be a member of the specified community.
       parameters:
-        - name: communityid
+        - name: communityId
           in: path
           required: true
           schema:
@@ -155,14 +155,14 @@ paths:
                   last:
                     type: boolean
 
-  /freelancers/communities/{communityid}/active-contracts:
+  /freelancers/communities/{communityId}/active-contracts:
     get:
       summary: Get active contracts for a community
       security:
         - bearerAuth: []
       description: Requires JWT authentication. The user must be a member of the specified community.
       parameters:
-        - name: communityid
+        - name: communityId
           in: path
           required: true
           schema:
@@ -240,14 +240,14 @@ paths:
                   last:
                     type: boolean
 
-  /freelancers/communities/{communityid}/accept-to-join:
+  /freelancers/communities/{communityId}/accept-to-join:
     post:
       summary: Accept or reject a freelancer's request to join a community
       security:
         - bearerAuth: []
       description: Requires JWT authentication. The user must be a community admin.
       parameters:
-        - name: communityid
+        - name: communityId
           in: path
           required: true
           schema:
@@ -274,14 +274,14 @@ paths:
         '400':
           description: Invalid request data
 
-  /freelancers/communities/{communityid}/vote:
+  /freelancers/communities/{communityId}/vote:
     post:
       summary: Vote on a contract within a community
       security:
         - bearerAuth: []
       description: Requires JWT authentication. The user must be a community member.
       parameters:
-        - name: communityid
+        - name: communityId
           in: path
           required: true
           schema:
