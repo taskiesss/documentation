@@ -11,14 +11,14 @@ components:
       bearerFormat: JWT
 
 paths:
-  /freelancers/communities/{communityid}/joinrequests:
+  /freelancers/communities/{communityId}/joinrequests:
     get:
       summary: Get join requests for a community
       security:
         - bearerAuth: []
       description: Requires JWT authentication. The user must be a member of the specified community.
       parameters:
-        - name: communityid
+        - name: communityId
           in: path
           required: true
           schema:
