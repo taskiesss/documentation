@@ -1,0 +1,306 @@
+openapi: 3.0.0
+info:
+  title: Freelancing Platform API
+  version: 1.0.0
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+paths:
+  /freelancers/communities/{communityid}/joinrequests:
+    get:
+      summary: Get join requests for a community
+      security:
+        - bearerAuth: []
+      description: Requires JWT authentication. The user must be a member of the specified community.
+      parameters:
+        - name: communityid
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        freelancerID:
+                          type: string
+                        name:
+                          type: string
+                        profilePicture:
+                          type: string
+                        positionName:
+                          type: string
+                  pageable:
+                    type: object
+                    properties:
+                      pageNumber:
+                        type: integer
+                      pageSize:
+                        type: integer
+                      offset:
+                        type: integer
+                  totalPages:
+                    type: integer
+                  totalElements:
+                    type: integer
+                  last:
+                    type: boolean
+
+  /freelancers/communities/{communityid}/offers:
+    get:
+      summary: Get offers for a community
+      security:
+        - bearerAuth: []
+      description: Requires JWT authentication. The user must be a member of the specified community.
+      parameters:
+        - name: communityid
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        contractID:
+                          type: string
+                        jobTitle:
+                          type: string
+                        description:
+                          type: string
+                          maxLength: 200
+                        skills:
+                          type: array
+                          items:
+                            type: string
+                        pricePerHour:
+                          type: number
+                          format: double
+                        startDate:
+                          type: string
+                          format: date
+                        dueDate:
+                          type: string
+                          format: date
+                        voted:
+                          type: integer
+                        left:
+                          type: integer
+                        accepted:
+                          type: integer
+                        rejected:
+                          type: integer
+                        agreed:
+                          type: boolean
+                  pageable:
+                    type: object
+                    properties:
+                      pageNumber:
+                        type: integer
+                      pageSize:
+                        type: integer
+                      offset:
+                        type: integer
+                  totalPages:
+                    type: integer
+                  totalElements:
+                    type: integer
+                  last:
+                    type: boolean
+
+  /freelancers/communities/{communityid}/active-contracts:
+    get:
+      summary: Get active contracts for a community
+      security:
+        - bearerAuth: []
+      description: Requires JWT authentication. The user must be a member of the specified community.
+      parameters:
+        - name: communityid
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        contractID:
+                          type: string
+                          format: uuid
+                        jobID:
+                          type: string
+                          format: uuid
+                        jobTitle:
+                          type: string
+                        clientName:
+                          type: string
+                        clientID:
+                          type: string
+                          format: uuid
+                        contractStatus:
+                          type: string
+                        budget:
+                          type: number
+                          format: double
+                        activeMilestone:
+                          type: string
+                        clientRateForFreelancer:
+                          type: number
+                          format: float
+                        startDate:
+                          type: string
+                          format: date
+                        dueDate:
+                          type: string
+                          format: date
+                        endDate:
+                          type: string
+                          format: date
+                  pageable:
+                    type: object
+                    properties:
+                      pageNumber:
+                        type: integer
+                      pageSize:
+                        type: integer
+                      offset:
+                        type: integer
+                  totalPages:
+                    type: integer
+                  totalElements:
+                    type: integer
+                  last:
+                    type: boolean
+
+  /freelancers/communities/{communityid}/accept-to-join:
+    post:
+      summary: Accept or reject a freelancer's request to join a community
+      security:
+        - bearerAuth: []
+      description: Requires JWT authentication. The user must be a community admin.
+      parameters:
+        - name: communityid
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                freelancerid:
+                  type: string
+                positionName:
+                  type: string
+                choice:
+                  type: string
+                  enum: [accept, reject]
+      responses:
+        '200':
+          description: Freelancer request processed successfully
+        '403':
+          description: User is not a community admin
+        '400':
+          description: Invalid request data
+
+  /freelancers/communities/{communityid}/vote:
+    post:
+      summary: Vote on a contract within a community
+      security:
+        - bearerAuth: []
+      description: Requires JWT authentication. The user must be a community member.
+      parameters:
+        - name: communityid
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                contractId:
+                  type: string
+                agreed:
+                  type: boolean
+      responses:
+        '200':
+          description: Vote recorded successfully
+        '403':
+          description: User is not authorized
+        '400':
+          description: Invalid request data
