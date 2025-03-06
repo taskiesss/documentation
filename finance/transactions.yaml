@@ -1,0 +1,206 @@
+openapi: 3.0.3
+info:
+  title: Finance Transactions API
+  description: API for managing financial transactions on a freelancing platform.
+  version: 1.0.0
+servers:
+  - url: /api
+    description: Base URL for the API
+
+paths:
+  /finance/transactions:
+    post:
+      summary: Retrieve a list of transactions
+      description: Fetches a paginated list of financial transactions for the authenticated user using filters provided in the request body. Includes user details such as profile picture, name, and total balance. Filtering supports date range (startDate, endDate), transaction type, and pagination.
+      tags:
+        - Transactions
+      requestBody:
+        required: false
+        description: Filter criteria for transactions (e.g., date range, transaction type, pagination). If omitted, default values are used.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TransactionFilter"
+      responses:
+        "200":
+          description: Successfully retrieved the list of transactions along with user details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionResponse"
+        "400":
+          description: Invalid request body (e.g., invalid date format, invalid transaction type, or filter values)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized - User is not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      security:
+        - bearerAuth: []
+
+components:
+  schemas:
+    TransactionFilter:
+      type: object
+      properties:
+        startDate:
+          type: string
+          format: date
+          description: Start date for filtering transactions (format YYYY-MM-DD). If not provided, defaults to the earliest possible date.
+          example: "2024-10-16"
+        endDate:
+          type: string
+          format: date
+          description: End date for filtering transactions (format YYYY-MM-DD). If not provided, defaults to the current date.
+          example: "2024-11-14"
+        page:
+          type: integer
+          minimum: 1
+          description: Page number for pagination (default 1)
+          default: 1
+          example: 1
+        size:
+          type: integer
+          minimum: 1
+          maximum: 100
+          description: Number of transactions per page (default 10)
+          default: 10
+          example: 10
+        type:
+          type: string
+          description: Type of transaction to filter by. If not provided, all transaction types are included. Must match one of the enum values.
+          enum:
+            - send_money
+            - receive_money
+            - deposit
+            - withdraw
+          example: "receive_money"
+    TransactionResponse:
+      type: object
+      required:
+        - userProfile
+        - transactions
+      properties:
+        userProfile:
+          $ref: "#/components/schemas/UserProfile"
+        transactions:
+          $ref: "#/components/schemas/Transactions"
+    Transactions:
+      type: object
+      required:
+        - content
+        - totalElements
+        - totalPages
+        - currentPage
+        - pageSize
+      properties:
+        content:
+          type: array
+          description: List of transactions matching the filter criteria
+          items:
+            $ref: "#/components/schemas/Transaction"
+        totalElements:
+          type: integer
+          description: Total number of transactions matching the filter
+          example: 678
+        totalPages:
+          type: integer
+          description: Total number of pages
+          example: 68
+        currentPage:
+          type: integer
+          description: Current page number
+          example: 1
+        pageSize:
+          type: integer
+          description: Number of transactions per page
+          example: 10
+    UserProfile:
+      type: object
+      required:
+        - name
+        - totalBalance
+      properties:
+        profilePicture:
+          type: string
+          description: URL to the user's profile picture. Null if no picture is set.
+          example: "https://example.com/images/isabel-austin.jpg"
+          nullable: true
+        name:
+          type: string
+          description: Full name of the authenticated user
+          example: "Isabel Austin"
+        totalBalance:
+          type: number
+          description: Total available balance in the user's account
+          example: 1000
+    Transaction:
+      type: object
+      required:
+        - id
+        - date
+        - type
+        - description
+        - amount
+        - currentBalance
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the transaction
+          example: "30132123"
+        date:
+          type: string
+          format: date
+          description: Date of the transaction (format DD/MM/YYYY)
+          example: "16/10/2024"
+        type:
+          type: string
+          description: Type of transaction
+          enum:
+            - send_money
+            - receive_money
+            - deposit
+            - withdraw
+          example: "receive_money"
+        description:
+          type: string
+          description: Description of the transaction
+          example: "Project payment from [Client Name]"
+        amount:
+          type: number
+          description: Amount of the transaction
+          example: 562
+        currentBalance:
+          type: number
+          description: Current balance after this transaction
+          example: 1000
+    ErrorResponse:
+      type: object
+      required:
+        - message
+        - status
+      properties:
+        message:
+          type: string
+          description: Error message describing the issue
+          example: "Invalid date format for startDate"
+        status:
+          type: integer
+          description: HTTP status code
+          example: 400
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
