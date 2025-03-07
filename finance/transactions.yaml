@@ -34,7 +34,7 @@ paths:
                   example: 10
                 type:
                   type: string
-                  enum: [send_money, receive_money, deposit, withdraw]
+                  enum: [ TRANSACTION , DEPOSIT , WITHDRAWL]
       responses:
         '200':
           description: A paginated list of financial transactions
@@ -57,8 +57,8 @@ paths:
                           example: "16/10/2024"
                         type:
                           type: string
-                          enum: [send_money, receive_money, deposit, withdraw]
-                          example: "receive_money"
+                          enum: [ TRANSACTION , DEPOSIT , WITHDRAWL]
+                          example: "TRANSACTION"
                         description:
                           type: string
                           example: "Project payment from [Client Name]"
