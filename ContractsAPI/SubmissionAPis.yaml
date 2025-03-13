@@ -22,7 +22,7 @@ paths:
           in: path
           required: true
           schema:
-            type: string
+            type: integer  # Adjusted type to integer if index is numeric
           description: The ID of the milestone.
       responses:
         "200":
@@ -54,7 +54,7 @@ paths:
           in: path
           required: true
           schema:
-            type: string
+            type: integer  # Adjusted type to integer if index is numeric
           description: The ID of the milestone.
       requestBody:
         required: true
@@ -98,7 +98,7 @@ paths:
           in: path
           required: true
           schema:
-            type: string
+            type: integer  # Adjusted type to integer if index is numeric
           description: The ID of the milestone.
         - name: type
           in: path
@@ -124,6 +124,72 @@ paths:
           description: Internal server error
       security:
         - BearerAuth: []
+  /freelancers/contracts/{contractId}/milestones/{milestoneIndex}/request-review:
+    post:
+      summary: Request a review for a milestone
+      description: The freelancer who owns the contract or the admin of the community that owns the contract can request a review. The current status of the milestone must be IN_PROGRESS.
+      parameters:
+        - name: contractId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the contract.
+        - name: milestoneIndex
+          in: path
+          required: true
+          schema:
+            type: integer  # Adjusted type to integer if index is numeric
+          description: The ID of the milestone.
+      responses:
+        "200":
+          description: Review request sent successfully and email notification sent to the client
+        "400":
+          description: Bad request - Milestone status must be IN_PROGRESS
+        "403":
+          description: Forbidden - User is not authorized to request a review
+        "500":
+          description: Internal server error
+      security:
+        - BearerAuth: []
+  /clients/contracts/{contractId}/milestones/{milestoneIndex}/approve-milestone:
+    post:
+      summary: Client reviews the milestone submission
+      description: The client who owns the contract reviews the milestone. If accepted, the milestone status is changed to "approved" and check if the contract payment method is per milestone then make payment , and the next milestone (if it exists) is set to "IN_PROGRESS". An email is sent to inform the freelancer or all community members of the update.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                accepted:
+                  type: boolean
+                  description: Whether the milestone is accepted or not
+      parameters:
+        - name: contractId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the contract.
+        - name: milestoneIndex
+          in: path
+          required: true
+          schema:
+            type: integer  # Adjusted type to integer if index is numeric
+          description: The ID of the milestone.
+      responses:
+        "200":
+          description: Milestone reviewed successfully, and email notification sent to the freelancer or community
+        "400":
+          description: Bad request - Invalid input data or status change error
+        "403":
+          description: Forbidden - User is not authorized to review the milestone
+        "500":
+          description: Internal server error
+      security:
+        - BearerAuth: []
 components:
   schemas:
     Submission:
@@ -144,29 +210,19 @@ components:
       properties:
         id:
           type: string
-          description: Unique identifier for the file
-        url:
-          type: string
-          format: uri
-          description: URL to download the file
+          description: The ID of the file
         name:
           type: string
-          description: Name of the file
+          description: The name of the file
+        url:
+          type: string
+          description: The URL where the file can be accessed
     Link:
       type: object
       properties:
         id:
           type: string
-          description: Unique identifier for the link
+          description: The ID of the link
         url:
           type: string
-          format: uri
-          description: URL of the link
-        name:
-          type: string
-          description: Name of the link
-  securitySchemes:
-    BearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
+          description: The URL of the link
