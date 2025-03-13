@@ -304,3 +304,72 @@ paths:
           description: User is not authorized
         '400':
           description: Invalid request data
+
+  /freelancers/communities/{communityId}/votes/{contractId}:
+    get:
+      summary: Get detailed vote information for a contract within a community
+      security:
+        - bearerAuth: []
+      description: Requires JWT authentication. The user must be a member of the specified community.
+      parameters:
+        - name: communityId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: contractId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response with vote details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accepted:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        position:
+                          type: string
+                        freelancerId:
+                          type: string
+                        freelancerProfilePicture:
+                          type: string
+                  rejected:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        position:
+                          type: string
+                        freelancerId:
+                          type: string
+                        freelancerProfilePicture:
+                          type: string
+                  remaining:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        position:
+                          type: string
+                        freelancerId:
+                          type: string
+                        freelancerProfilePicture:
+                          type: string
+        '403':
+          description: User is not authorized to view vote details
+        '400':
+          description: Invalid request data
