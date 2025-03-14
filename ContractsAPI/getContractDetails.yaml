@@ -147,6 +147,9 @@ components:
         isCommunity:
           type: boolean
           description: If the freelancer is part of a community
+        isCommunityAdmin:
+          type: boolean
+          description: If the freelancer is the admin of community then return true else false
         projectType:
           type: string
           enum: [PerMilestones, PerProject]
