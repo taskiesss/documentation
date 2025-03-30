@@ -1,0 +1,107 @@
+openapi: 3.0.0
+info:
+  title: Job Posting API
+  version: 1.0.0
+  description: API for posting job listings with JWT authentication
+
+paths:
+  /client/PostJob:
+    post:
+      summary: Post a new job
+      description: Allows authenticated clients to post a new job listing
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JobData"
+      responses:
+        "201":
+          description: Job successfully posted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Job posted successfully"
+                  jobId:
+                    type: string
+                    example: "123e4567-e89b-12d3-a456-426614174000"
+        "400":
+          description: Bad request - Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Missing required fields"
+        "401":
+          description: Unauthorized - Invalid or missing token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Authentication token required"
+
+components:
+  schemas:
+    JobData:
+      type: object
+      required:
+        - title
+        - skills
+        - projectLength
+        - experienceLevel
+        - expectedPricePerHour
+        - description
+      properties:
+        title:
+          type: string
+          description: Title of the job
+          example: "Senior Web Developer Needed"
+        skills:
+          type: array
+          items:
+            type: string
+          description: List of required skills
+          example: ["JavaScript", "React", "Node.js"]
+        projectLength:
+          type: string
+          enum:
+            - _less_than_1_month
+            - _1_to_3_months
+            - _3_to_6_months
+            - _more_than_6_months
+          description: Expected duration of the project
+          example: "_3_to_6_months"
+        experienceLevel:
+          type: string
+          enum:
+            - entry_level
+            - intermediate
+            - expert
+          description: Required experience level
+          example: "intermediate"
+        expectedPricePerHour:
+          type: number
+          format: float
+          description: Expected hourly rate
+          example: 50.00
+        description:
+          type: string
+          description: Detailed description of the job requirements and responsibilities
+          example: "We are looking for an experienced web developer to join our team and work on our e-commerce platform..."
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
