@@ -1,0 +1,131 @@
+openapi: 3.0.3
+info:
+  title: Freelancer Community API
+  version: 1.0.0
+
+paths:
+  /freelancers/communities/{communityId}/roles-and-positions:
+    get:
+      summary: Get roles and positions for freelancers in a community
+      description: Returns a list of roles and positions, including freelancer information and their respective positions.
+      tags:
+        - Freelancers
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: communityId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the community
+      responses:
+        '200':
+          description: A list of roles and positions for freelancers in the community
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    nameAndPicture:
+                      type: object
+                      properties:
+                        profilePicture:
+                          type: string
+                          description: URL to the freelancer's profile picture
+                        name:
+                          type: string
+                          description: Name of the freelancer
+                        role:
+                          type: string
+                          enum:
+                            - ADMIN
+                            - FREELANCER
+                            - CLIENT
+                          description: Role of the user
+                        id:
+                          type: string
+                          description: Unique identifier for the freelancer
+                    positionName:
+                      type: string
+                      description: Name of the position (e.g., Frontend Developer, Backend Developer, UI/UX Designer)
+                    description:
+                      type: string
+                      description: position description
+                    positionId:
+                      type: number
+                      description: ID of the position in the system. Unique identifier for each role.
+                    positionPercent:
+                      type: number
+                      format: float
+                      description: Financial percentage associated with the position. Indicates the proportion of the freelancer's earnings allocated to this position.
+        '401':
+          description: Unauthorized - JWT is missing or invalid
+        '403':
+          description: Forbidden - User does not have the necessary role or permissions
+
+  /freelancers/communities/{communityId}/update-positions:
+    post:
+      summary: Edit positions and roles in the community
+      description: Allows a user to update the position, financial percentage, and description for a freelancer within the community. The total percentage for all positions must equal 100%. for BACKEND :of positionId == 0 then add create new community member instance without the freelancer , FRONTEND -> make sure to send all community memebers in the post request 
+      tags:
+        - Freelancers
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: communityId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the community
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  positionId:
+                    type: integer
+                    description: ID of the position being updated
+                  positionName:
+                    type: string
+                    description: Name of the position
+                  financialPercent:
+                    type: number
+                    format: float
+                    description: Financial percentage for the position
+                  description:
+                    type: string
+                    description: Description of the position
+      responses:
+        '200':
+          description: Successfully updated positions and roles
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A message indicating the update was successful
+        '400':
+          description: Bad Request - If the total percentage doesn't equal 100% or required fields are missing
+        '401':
+          description: Unauthorized - JWT is missing or invalid
+        '403':
+          description: Forbidden - User does not have permission to modify the positions in this community
+        '404':
+          description: Not Found - Community ID not found
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

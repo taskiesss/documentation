@@ -1,0 +1,119 @@
+openapi: 3.0.3
+info:
+  title: Freelancer Community API
+  version: 1.0.0
+
+paths:
+  /freelancers/communities/{communityId}/available-positions:
+    get:
+      summary: Get available positions in a community for freelancers
+      description: Returns a paginated list of available positions for a given community. Only accessible to authenticated freelancers who are **not** members of the community.
+      tags:
+        - Freelancers
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: communityId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the community
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+          description: Page number for pagination
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+          description: Page size for pagination
+      responses:
+        '200':
+          description: A page of available positions
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: number
+                          description: Unique identifier for the position
+                        positionName:
+                          type: string
+                          description: Name of the position
+                        percentage:
+                          type: number
+                          format: float
+                          description: Percentage value associated with the position
+                        description:
+                          type: string
+                          description: Description of the position
+                  totalPages:
+                    type: integer
+                  totalElements:
+                    type: integer
+                  size:
+                    type: integer
+                  number:
+                    type: integer
+        '401':
+          description: Unauthorized - JWT is missing or invalid
+        '403':
+          description: Forbidden - User is not a freelancer or is already a community member
+
+  /freelancers/communities/{communityId}/join-request/{positionId}:
+    post:
+      summary: Request to join a position in a community
+      description: Allows a freelancer to request to join a position in a community. The system will delete any existing join request from this freelancer to this community. make sure that this position id is a CommunityMember of this Community
+      tags:
+        - Freelancers
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: communityId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the community
+        - name: positionId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the position to join
+      responses:
+        '200':
+          description: Request accepted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "accepted"
+        '401':
+          description: Unauthorized - JWT is missing or invalid
+        '403':
+          description: Forbidden - User is not a freelancer or is already a member of the community
+        '400':
+          description: Bad Request - Invalid position or community ID
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
