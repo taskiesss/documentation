@@ -27,10 +27,8 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Job posted successfully"
-                  jobId:
-                    type: string
-                    example: "123e4567-e89b-12d3-a456-426614174000"
+                    example: "true"
+                 
         "400":
           description: Bad request - Invalid input
           content:
@@ -38,7 +36,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  error:
+                  message:
                     type: string
                     example: "Missing required fields"
         "401":
@@ -48,7 +46,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  error:
+                  message:
                     type: string
                     example: "Authentication token required"
 
