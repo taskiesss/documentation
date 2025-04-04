@@ -5,10 +5,10 @@ info:
   description: API for posting job listings with JWT authentication
 
 paths:
-  /client/PostJob:
+  /clients/PostJob:
     post:
       summary: Post a new job
-      description: Allows authenticated clients to post a new job listing
+      description: Allows authenticated clients to post a new job listing ... backend needs to fill all the remaining fields in the job entity and save it to the database.
       security:
         - bearerAuth: []
       requestBody:
