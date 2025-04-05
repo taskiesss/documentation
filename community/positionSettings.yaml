@@ -32,25 +32,23 @@ paths:
                     nameAndPicture:
                       type: object
                       properties:
-                        profilePicture:
+                        freelancerProfilePicture:
                           type: string
                           description: URL to the freelancer's profile picture
                         name:
                           type: string
                           description: Name of the freelancer
-                        role:
+                        position:
                           type: string
-                          enum:
-                            - ADMIN
-                            - FREELANCER
-                            - CLIENT
+                          
                           description: Role of the user
-                        id:
+                        freelancerId:
                           type: string
                           description: Unique identifier for the freelancer
-                    positionName:
-                      type: string
-                      description: Name of the position (e.g., Frontend Developer, Backend Developer, UI/UX Designer)
+                        admin:
+                          type: boolean
+                          description: Indicates if the freelancer is an admin in the community  
+                    
                     description:
                       type: string
                       description: position description
