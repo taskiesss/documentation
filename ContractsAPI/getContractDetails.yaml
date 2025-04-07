@@ -133,6 +133,14 @@ components:
           type: number
           format: float
           description: Total earnings accumulated for the contract so far
+        memberPercentage:
+          type: number
+          format: float
+          description: Total earnings accumulated for the contract so far
+        memberEarnings:
+          type: number
+          format: float
+          description: Total earnings accumulated for the contract so far  
         hoursWorked:
           type: number
           format: float
