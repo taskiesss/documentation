@@ -55,10 +55,14 @@ paths:
                     positionId:
                       type: number
                       description: ID of the position in the system. Unique identifier for each role.
-                    positionPercent:
+                    currentPercent:
                       type: number
                       format: float
                       description: Financial percentage associated with the position. Indicates the proportion of the freelancer's earnings allocated to this position.
+                    futurePercent:
+                      type: number
+                      format: float
+                      description: Financial percentage associated with the position. Indicates the proportion of the freelancer's earnings allocated to this position.  
         '401':
           description: Unauthorized - JWT is missing or invalid
         '403':
