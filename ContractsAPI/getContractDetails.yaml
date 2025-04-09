@@ -72,6 +72,40 @@ paths:
         "404":
           description: Contract or milestones not found
 
+  /api/contracts/{contractId}/rate-contract/{rate}:
+    post:
+      summary: Rate a contract
+      description: Allows the client, the freelancer, or the community admin (if the freelancer belongs to a community) to rate the contract.
+      operationId: rateContract
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: contractId
+          in: path
+          required: true
+          description: The ID of the contract to rate
+          schema:
+            type: string
+        - name: rate
+          in: path
+          required: true
+          description: The rating value from 1 to 5
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 5
+      responses:
+        "200":
+          description: Rating submitted successfully
+        "400":
+          description: Invalid rating value or contract state
+        "401":
+          description: Unauthorized - Invalid or missing token
+        "403":
+          description: Forbidden - User does not have permission to rate this contract
+        "404":
+          description: Contract not found
+
 components:
   securitySchemes:
     bearerAuth:
@@ -94,6 +128,9 @@ components:
         - projectType
         - totalCurrentEarnings
         - hoursWorked
+        - voteIsDone
+        - pendingClientToRate
+        - pendingFreelancerToRate
       properties:
         contractStatus:
           type: string
@@ -136,11 +173,11 @@ components:
         memberPercentage:
           type: number
           format: float
-          description: Total earnings accumulated for the contract so far
+          description: Percentage share if part of a community
         memberEarnings:
           type: number
           format: float
-          description: Total earnings accumulated for the contract so far  
+          description: Earnings of the member if in a community  
         hoursWorked:
           type: number
           format: float
@@ -157,11 +194,23 @@ components:
           description: If the freelancer is part of a community
         isCommunityAdmin:
           type: boolean
-          description: If the freelancer is the admin of community then return true else false
+          description: If the freelancer is the admin of the community
         projectType:
           type: string
           enum: [PerMilestones, PerProject]
-          description: Type of project billing structure (Per Milestones or Per Project)
+          description: Type of project billing structure
+        voteIsDone:
+          type: boolean
+          default: false
+          description: Indicates if the user has voted on the contract
+        pendingClientToRate:
+          type: boolean
+          default: false
+          description: Indicates if the freelancer is pending to rate the client
+        pendingFreelancerToRate:
+          type: boolean
+          default: false
+          description: Indicates if the client is pending to rate the freelancer
 
     PageMilestone:
       type: object
@@ -184,44 +233,33 @@ components:
               properties:
                 unsorted:
                   type: boolean
-                  description: Whether the results are unsorted
                 sorted:
                   type: boolean
-                  description: Whether the results are sorted
                 empty:
                   type: boolean
-                  description: Whether the sort field is empty
             pageNumber:
               type: integer
               format: int32
-              description: The current page number (0-based index)
             pageSize:
               type: integer
               format: int32
-              description: The number of items per page
             offset:
               type: integer
               format: int32
-              description: The offset of the current page
             unpaged:
               type: boolean
-              description: Whether the page is unpaged
         totalElements:
           type: integer
           format: int32
-          description: The total number of `worksDone` items
         totalPages:
           type: integer
           format: int32
-          description: The total number of pages available
         size:
           type: integer
           format: int32
-          description: The size of the current page (items per page)
         number:
           type: integer
           format: int32
-          description: The current page number (starts at 0)
 
     Milestone:
       type: object
@@ -235,21 +273,15 @@ components:
       properties:
         title:
           type: string
-          description: Title of the milestone
         description:
           type: string
-          description: Description of the milestone
         expectedHours:
           type: number
-          description: Expected hours to complete the milestone
         dueDate:
           type: string
           format: date
-          description: Due date for the milestone
         status:
           type: string
           enum: [not_started, in_review, in_progress, approved]
-          description: Current status of the milestone
         milestoneId:
           type: string
-          description: Unique identifier for the milestone
