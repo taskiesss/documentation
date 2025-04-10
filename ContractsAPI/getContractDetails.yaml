@@ -105,7 +105,60 @@ paths:
           description: Forbidden - User does not have permission to rate this contract
         "404":
           description: Contract not found
+  /freelancers/contracts/{contractId}/approve-contract:
+    post:
+      summary: Approve or reject a contract
+      description: Endpoint to approve or reject a specific contract by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: contractId
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the contract
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                accepted:
+                  type: boolean
+                  description: Indicates whether the contract is accepted (true) or rejected (false)
+              required:
+                - accepted
+      responses:
+        "200":
+          description: Contract approval status updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
 
+        "400":
+          description: Bad request - Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        "404":
+          description: Contract not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
 components:
   securitySchemes:
     bearerAuth:
@@ -177,7 +230,7 @@ components:
         memberEarnings:
           type: number
           format: float
-          description: Earnings of the member if in a community  
+          description: Earnings of the member if in a community
         hoursWorked:
           type: number
           format: float
