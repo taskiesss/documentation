@@ -25,44 +25,49 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    nameAndPicture:
+                type: object
+                properties:
+                  isUserAdmin:
+                    type: boolean
+                    description: Indicates if the requesting user is an admin in the community
+                  communityMembers:
+                    type: array
+                    description: List of freelancer roles and positions
+                    items:
                       type: object
                       properties:
-                        freelancerProfilePicture:
+                        nameAndPicture:
+                          type: object
+                          properties:
+                            freelancerProfilePicture:
+                              type: string
+                              description: URL to the freelancer's profile picture
+                            name:
+                              type: string
+                              description: Name of the freelancer
+                            position:
+                              type: string
+                              description: Role of the user
+                            freelancerId:
+                              type: string
+                              description: Unique identifier for the freelancer
+                            admin:
+                              type: boolean
+                              description: Indicates if the freelancer is an admin in the community
+                        description:
                           type: string
-                          description: URL to the freelancer's profile picture
-                        name:
-                          type: string
-                          description: Name of the freelancer
-                        position:
-                          type: string
-                          
-                          description: Role of the user
-                        freelancerId:
-                          type: string
-                          description: Unique identifier for the freelancer
-                        admin:
-                          type: boolean
-                          description: Indicates if the freelancer is an admin in the community  
-                    
-                    description:
-                      type: string
-                      description: position description
-                    positionId:
-                      type: number
-                      description: ID of the position in the system. Unique identifier for each role.
-                    currentPercent:
-                      type: number
-                      format: float
-                      description: Financial percentage associated with the position. Indicates the proportion of the freelancer's earnings allocated to this position.
-                    futurePercent:
-                      type: number
-                      format: float
-                      description: Financial percentage associated with the position. Indicates the proportion of the freelancer's earnings allocated to this position.  
+                          description: Position description
+                        positionId:
+                          type: number
+                          description: ID of the position in the system. Unique identifier for each role.
+                        currentPercent:
+                          type: number
+                          format: float
+                          description: Financial percentage associated with the position. Indicates the proportion of the freelancer's earnings allocated to this position.
+                        futurePercent:
+                          type: number
+                          format: float
+                          description: Financial percentage associated with the position. Indicates the proportion of the freelancer's earnings allocated to this position.  
         '401':
           description: Unauthorized - JWT is missing or invalid
         '403':
@@ -71,7 +76,11 @@ paths:
   /freelancers/communities/{communityId}/update-positions:
     post:
       summary: Edit positions and roles in the community
-      description: Allows a user to update the position, financial percentage, and description for a freelancer within the community. The total percentage for all positions must equal 100%. for BACKEND :of positionId == 0 then add create new community member instance without the freelancer , FRONTEND -> make sure to send all community memebers in the post request 
+      description: >
+        Allows a user to update the position, financial percentage, and description for a freelancer within the community. 
+        The total percentage for all positions must equal 100%. 
+        Backend: If positionId == 0, then create a new community member instance without the freelancer.
+        Frontend: Make sure to send all community members in the POST request.
       tags:
         - Freelancers
       security:
