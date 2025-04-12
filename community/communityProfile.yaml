@@ -2,6 +2,7 @@ openapi: 3.0.0
 info:
   title: Community API
   version: 1.0.0
+
 paths:
   /communities/{communityId}/profile:
     get:
@@ -57,13 +58,21 @@ paths:
                         freelancerId:
                           type: string
                         freelancerProfilePicture:
-                          type: string  
+                          type: string
                   isFull:
                     type: boolean
                   isMember:
                     type: boolean
                   isAdmin:
                     type: boolean
+                  experienceLevel:
+                    type: string
+                    enum:
+                      - entry_level
+                      - intermediate
+                      - expert
+                  avgHoursPerWeek:
+                    type: number
 
   /communities/{id}/workdone:
     get:
@@ -213,6 +222,7 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
+
   schemas:
     PageableWorksDone:
       type: object
@@ -291,9 +301,8 @@ components:
         totalHours:
           type: number
           format: float
-          description: Total hours worked on this job      
-    
-    
+          description: Total hours worked on this job
+
     UpdateHeaderSectionRequest:
       type: object
       properties:
