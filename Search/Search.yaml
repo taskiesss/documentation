@@ -337,9 +337,13 @@ components:
             - intermediate
             - expert
           example: "intermediate"
+        avrgHoursPerWeek:
+          type: number
+          example: 43
         pricePerHour:
           type: number
           example: 50
+      
         profilePicture:
           type: string
           example: "https://example.com/profile.jpg"
@@ -350,6 +354,9 @@ components:
         id:
           type: string
           example: "887dda4d-c986-44c9-bba8-d1bef62d1c91"
+        title:
+          type: string
+          example: "software developpers"
         isFull:
           type: boolean
           example: true
@@ -372,6 +379,9 @@ components:
             - intermediate
             - expert
           example: "intermediate"
+        avrgHoursPerWeek:
+          type: number
+          example: 43
         memberCount:
           type: integer
           example: 500
