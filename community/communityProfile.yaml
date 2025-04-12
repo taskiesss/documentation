@@ -17,7 +17,7 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json:
@@ -123,11 +123,11 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/ProfilePictureUploadRequest'
+              $ref: "#/components/schemas/ProfilePictureUploadRequest"
       responses:
         "403":
           description: Forbidden – Only community admins can update this resource.
-  
+
   /communities/{id}/cover-picture:
     patch:
       summary: Update the community's cover picture (Admin only)
@@ -145,7 +145,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/CoverPictureUploadRequest'
+              $ref: "#/components/schemas/CoverPictureUploadRequest"
       responses:
         "403":
           description: Forbidden – Only community admins can update this resource.
@@ -167,7 +167,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateSkillsRequest'
+              $ref: "#/components/schemas/UpdateSkillsRequest"
       responses:
         "403":
           description: Forbidden – Only community admins can update this resource.
@@ -189,7 +189,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateDescriptionRequest'
+              $ref: "#/components/schemas/UpdateDescriptionRequest"
       responses:
         "403":
           description: Forbidden – Only community admins can update this resource.
@@ -211,7 +211,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateHeaderSectionRequest'
+              $ref: "#/components/schemas/UpdateHeaderSectionRequest"
       responses:
         "403":
           description: Forbidden – Only community admins can update this resource.
@@ -278,7 +278,7 @@ components:
           type: integer
           format: int32
           description: The current page number (starts at 0)
-          
+
     WorkDone:
       type: object
       properties:
@@ -312,9 +312,9 @@ components:
         jobTitle:
           type: string
           description: The main job title or focus of the community.
-        country:
-          type: string
-          description: Updated country of operation.
+        avgHoursPerWeek:
+          type: number
+          description: Updated average hours per week.
         pricePerHour:
           type: number
           format: float
@@ -322,9 +322,9 @@ components:
       required:
         - name
         - jobTitle
-        - country
+        - avgHoursPerWeek
         - pricePerHour
-        
+
     ProfilePictureUploadRequest:
       type: object
       properties:
@@ -332,7 +332,7 @@ components:
           type: string
           format: binary
           description: The profile picture file to upload (JPEG, PNG, or WEBP).
-  
+
     CoverPictureUploadRequest:
       type: object
       properties:
@@ -340,7 +340,7 @@ components:
           type: string
           format: binary
           description: The cover picture file to upload (JPEG, PNG, or WEBP).
-    
+
     UpdateSkillsRequest:
       type: object
       properties:
@@ -351,7 +351,7 @@ components:
           description: Updated list of skills.
       required:
         - skills
-    
+
     UpdateDescriptionRequest:
       type: object
       properties:
