@@ -1,0 +1,65 @@
+openapi: 3.0.0
+info:
+  title: Freelancers Communities API
+  version: "1.0"
+paths:
+  /freelancers/my-communities:
+    get:
+      summary: Retrieve the communities where the freelancer is an admin or a member
+      description: |
+        Returns two arrays: one for the communities the freelancer administers and
+        another for the communities they are a member of. Requires a valid JWT token.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response containing communities
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  adminOf:
+                    type: array
+                    description: List of communities administered by the user
+                    items:
+                      type: object
+                      properties:
+                        communityId:
+                          type: string
+                          description: Unique identifier of the community
+                        name:
+                          type: string
+                          description: Display name of the community
+                        profilePicture:
+                          type: string
+                          description: URL or base64 string for the community’s profile picture
+                        communityTitle:
+                          type: string
+                          description: Title or tagline of the community
+                  memberOf:
+                    type: array
+                    description: List of communities where the user is a member
+                    items:
+                      type: object
+                      properties:
+                        communityId:
+                          type: string
+                          description: Unique identifier of the community
+                        name:
+                          type: string
+                          description: Display name of the community
+                        profilePicture:
+                          type: string
+                          description: URL or base64 string for the community’s profile picture
+                        communityTitle:
+                          type: string
+                          description: Title or tagline of the community
+        '401':
+          description: Unauthorized - Invalid or missing JWT token
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

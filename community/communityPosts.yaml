@@ -1,0 +1,284 @@
+openapi: 3.0.0
+info:
+  title: Freelancers Communities API
+  version: "1.0"
+paths:
+  /freelancers/communities/{communityId}/posts:
+    get:
+      summary: Get paginated list of posts for a specific community
+      description: |
+        Retrieves a paginated list of posts belonging to the specified community.
+        The page and size parameters are used to control pagination.
+      parameters:
+        - in: path
+          name: communityId
+          required: true
+          schema:
+            type: string
+          description: ID of the community
+        - in: query
+          name: page
+          description: The page number to retrieve
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+        - in: query
+          name: size
+          description: The number of records per page
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: Paginated response with posts data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Post'
+                  totalElements:
+                    type: integer
+                    description: The total number of elements
+                  totalPages:
+                    type: integer
+                    description: The total number of pages
+                  number:
+                    type: integer
+                    description: The current page number
+                  size:
+                    type: integer
+                    description: The size of the page
+        '401':
+          description: Unauthorized - Invalid or missing JWT token
+
+  /freelancer/communities/post/{postId}/post-comments:
+    get:
+      summary: Get paginated list of comments for a specific post
+      description: |
+        Retrieves a paginated list of comments belonging to the specified post.
+        The page and size parameters are used to control pagination.
+      parameters:
+        - in: path
+          name: postId
+          required: true
+          schema:
+            type: string
+          description: ID of the post
+        - in: query
+          name: page
+          description: The page number to retrieve
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+        - in: query
+          name: size
+          description: The number of records per page
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: Paginated response with post comments
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Comment'
+                  totalElements:
+                    type: integer
+                    description: The total number of elements
+                  totalPages:
+                    type: integer
+                    description: The total number of pages
+                  number:
+                    type: integer
+                    description: The current page number
+                  size:
+                    type: integer
+                    description: The size of the page
+        '401':
+          description: Unauthorized - Invalid or missing JWT token
+
+  /freelancers/communities/{communityId}/post:
+    post:
+      summary: Create a new post in a specific community
+      description: |
+        Creates a new post within the given community.
+        Requires a valid JWT token and membership in the community.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: communityId
+          required: true
+          schema:
+            type: string
+          description: ID of the community
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePostRequest'
+      responses:
+        '201':
+          description: Post created successfully
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized - Invalid or missing JWT token
+
+  /freelancers/communities/{communityId}/posts/comment:
+    post:
+      summary: Add a comment to a post in a specific community
+      description: |
+        Creates a new comment on a post within the given community.
+        Requires a valid JWT token and membership in the community.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: communityId
+          required: true
+          schema:
+            type: string
+          description: ID of the community
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                postID:
+                  type: string
+                  description: ID of the post to which the comment belongs
+                content:
+                  type: string
+                  description: Content of the new comment
+              required:
+                - postID
+                - content
+      responses:
+        '201':
+          description: Comment created successfully
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized - Invalid or missing JWT token
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    # ---- Post Data ----
+    Post:
+      type: object
+      properties:
+        postID:
+          type: string
+          description: Unique identifier of the post
+        postOwner:
+          type: object
+          properties:
+            freelancerName:
+              type: string
+              description: Name of the freelancer who owns the post
+            profilePicture:
+              type: string
+              description: URL/base64 string for the freelancer's profile picture
+            freelancerId:
+              type: string
+              description: Unique identifier of the freelancer
+          required:
+            - freelancerName
+            - freelancerId
+        postTitle:
+          type: string
+          description: Title of the post
+        postContent:
+          type: string
+          description: Main content of the post
+        isLiked:
+          type: boolean
+          description: Indicates if the current user has liked the post
+        numberOfLikes:
+          type: integer
+          description: Total number of likes on the post
+        date:
+          type: string
+          format: date-time
+          description: Date and time the post was created or published
+      required:
+        - postID
+        - postOwner
+        - postTitle
+        - postContent
+        - isLiked
+        - numberOfLikes
+        - date
+
+    # ---- Comment Data ----
+    Comment:
+      type: object
+      properties:
+        postOwner:
+          type: object
+          properties:
+            freelancerName:
+              type: string
+              description: Name of the freelancer who owns the comment
+            profilePicture:
+              type: string
+              description: URL/base64 string for the freelancer's profile picture
+            freelancerId:
+              type: string
+              description: Unique identifier of the freelancer
+          required:
+            - freelancerName
+            - freelancerId
+        date:
+          type: string
+          format: date-time
+          description: Date and time the comment was created
+        commentId:
+          type: string
+          description: Unique identifier for the comment
+        content:
+          type: string
+          description: Content of the comment
+      required:
+        - postOwner
+        - date
+        - commentId
+        - content
+
+    # ---- Create Post Request Body ----
+    CreatePostRequest:
+      type: object
+      properties:
+        postTitle:
+          type: string
+          description: Title of the new post
+        postContent:
+          type: string
+          description: Content of the new post
+      required:
+        - postTitle
+        - postContent
