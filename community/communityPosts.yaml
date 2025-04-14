@@ -31,7 +31,7 @@ paths:
             type: integer
             minimum: 1
       responses:
-        '200':
+        "200":
           description: Paginated response with posts data
           content:
             application/json:
@@ -41,7 +41,7 @@ paths:
                   content:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Post'
+                      $ref: "#/components/schemas/Post"
                   totalElements:
                     type: integer
                     description: The total number of elements
@@ -54,16 +54,22 @@ paths:
                   size:
                     type: integer
                     description: The size of the page
-        '401':
+        "401":
           description: Unauthorized - Invalid or missing JWT token
 
-  /freelancer/communities/post/{postId}/post-comments:
+  /freelancers/communities/{communityId}/post/{postId}/post-comments:
     get:
       summary: Get paginated list of comments for a specific post
       description: |
         Retrieves a paginated list of comments belonging to the specified post.
         The page and size parameters are used to control pagination.
       parameters:
+        - in: path
+          name: communityId
+          required: true
+          schema:
+            type: string
+          description: ID of the community
         - in: path
           name: postId
           required: true
@@ -85,7 +91,7 @@ paths:
             type: integer
             minimum: 1
       responses:
-        '200':
+        "200":
           description: Paginated response with post comments
           content:
             application/json:
@@ -95,7 +101,7 @@ paths:
                   content:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Comment'
+                      $ref: "#/components/schemas/Comment"
                   totalElements:
                     type: integer
                     description: The total number of elements
@@ -108,7 +114,7 @@ paths:
                   size:
                     type: integer
                     description: The size of the page
-        '401':
+        "401":
           description: Unauthorized - Invalid or missing JWT token
 
   /freelancers/communities/{communityId}/post:
@@ -131,16 +137,16 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreatePostRequest'
+              $ref: "#/components/schemas/CreatePostRequest"
       responses:
-        '201':
+        "201":
           description: Post created successfully
-        '400':
+        "400":
           description: Bad request
-        '401':
+        "401":
           description: Unauthorized - Invalid or missing JWT token
 
-  /freelancers/communities/{communityId}/posts/comment:
+  /freelancers/communities/{communityId}/posts/{postId}/comment:
     post:
       summary: Add a comment to a post in a specific community
       description: |
@@ -155,6 +161,12 @@ paths:
           schema:
             type: string
           description: ID of the community
+        - in: path
+          name: postId
+          required: true
+          schema:
+            type: string
+          description: ID of the post
       requestBody:
         required: true
         content:
@@ -162,23 +174,122 @@ paths:
             schema:
               type: object
               properties:
-                postID:
-                  type: string
-                  description: ID of the post to which the comment belongs
                 content:
                   type: string
                   description: Content of the new comment
               required:
-                - postID
                 - content
       responses:
-        '201':
+        "201":
           description: Comment created successfully
-        '400':
+        "400":
           description: Bad request
-        '401':
+        "401":
           description: Unauthorized - Invalid or missing JWT token
 
+  /freelancers/communities/{communityId}/post/{postId}/likes:
+    get:
+      summary: Get list of freelancers who liked a post
+      description: Retrieves a list of freelancers who liked the specified post, including their ID, name, and profile picture.
+      operationId: getPostLikes
+      parameters:
+        - name: communityId
+          in: path
+          description: Unique identifier of the community
+          required: true
+          schema:
+            type: string
+        - name: postId
+          in: path
+          description: Unique identifier of the post
+          required: true
+          schema:
+            type: string
+
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Successful response with list of freelancers who liked the post
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PostLikesResponse"
+        "400":
+          description: Invalid postId format
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Post not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /freelancers/communities/{communityId}/post/{postId}/likes/{liked}:
+    post:
+      summary: Like or unlike a post
+      description: Allows an authenticated freelancer to like or unlike a post based on the liked parameter.
+      operationId: likePost
+      parameters:
+        - name: communityId
+          in: path
+          description: Unique identifier of the community
+          required: true
+          schema:
+            type: string
+        - name: postId
+          in: path
+          description: Unique identifier of the post
+          required: true
+          schema:
+            type: string
+        - name: liked
+          in: path
+          description: Set to true to like the post, false to unlike it
+          required: true
+          schema:
+            type: boolean
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Action completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "400":
+          description: Invalid postId or liked parameter
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Post not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Conflict (e.g., post already liked)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 components:
   securitySchemes:
     bearerAuth:
@@ -282,3 +393,46 @@ components:
       required:
         - postTitle
         - postContent
+    Freelancer:
+      type: object
+      properties:
+        freelancerId:
+          type: string
+          description: Unique identifier of the freelancer
+        freelancerName:
+          type: string
+          description: Name of the freelancer
+        profilePic:
+          type: string
+          description: URL to the freelancer's profile picture
+          nullable: true
+      required:
+        - freelancerId
+        - freelancerName
+    PostLikesResponse:
+      type: object
+      properties:
+        likes:
+          type: array
+          items:
+            $ref: "#/components/schemas/Freelancer"
+
+      required:
+        - likes
+
+    SuccessResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Success message (e.g., "Post liked successfully")
+      required:
+        - message
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Description of the error
+      required:
+        - error
