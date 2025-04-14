@@ -1,0 +1,84 @@
+openapi: 3.0.3
+info:
+  title: Freelancers Communities API
+  version: 1.0.0
+paths:
+  /freelancers/communities/create-community:
+    post:
+      summary: Create a new community
+      description: Creates a new community resource with specified roles and positions.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                commityName:
+                  type: string
+                  description: "Name of the community"
+                descirption:
+                  type: string
+                  description: "Description of the community"
+                title:
+                  type: string
+                  description: "Title or short headline for the community"
+                pricePerHour:
+                  type: number
+                  description: "The price per hour rate"
+                avrgHoursPerWeek:
+                  type: number
+                  description: "Average hours per week"
+                skills:
+                  type: array
+                  items:
+                    type: string
+                  description: "List of required or relevant skills"
+                adminRole:
+                  type: object
+                  description: "Administrative role details"
+                  properties:
+                    positionName:
+                      type: string
+                      description: "Admin role's position name"
+                    percentage:
+                      type: number
+                      description: "Percentage of something (e.g., stake, share, etc.)"
+                    description:
+                      type: string
+                      description: "Description of the admin role"
+                communityPositions:
+                  type: array
+                  description: "List of positions in the community"
+                  items:
+                    type: object
+                    properties:
+                      positionName:
+                        type: string
+                        description: "Position name"
+                      percentage:
+                        type: number
+                        description: "Percentage of something (e.g., stake, share, etc.)"
+                      description:
+                        type: string
+                        description: "Description of the position"
+              required:
+                - commityName
+                - descirption
+                - title
+                - pricePerHour
+                - avrgHoursPerWeek
+                - skills
+                - adminRole
+                - communityPositions
+      responses:
+        '200':
+          description: Successfully created the new community
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  communityID:
+                    type: string
+                    description: "Unique identifier for the created community"
