@@ -146,7 +146,7 @@ paths:
         "401":
           description: Unauthorized - Invalid or missing JWT token
 
-  /freelancers/communities/{communityId}/posts/{postId}/comment:
+  /freelancers/communities/{communityId}/post/{postId}/comment:
     post:
       summary: Add a comment to a post in a specific community
       description: |
@@ -290,6 +290,104 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /freelancers/communities/{communityId}/post/{postId}:
+    delete:
+      summary: Delete a specific post in a community
+      description: Deletes a post identified by `postId` within the specified `communityId`. Requires JWT Bearer authentication. Only authorized users (e.g., post owner or community admin) can delete the post.
+      operationId: deleteCommunityPost
+
+      parameters:
+        - name: communityId
+          in: path
+          description: ID of the community containing the post
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: postId
+          in: path
+          description: ID of the post to delete
+          required: true
+          schema:
+            type: string
+            format: uuid
+      security:
+        - bearerAuth: []
+      responses:
+        "204":
+          description: Post deleted successfully
+        "401":
+          description: Unauthorized - Invalid or missing JWT token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Unauthorized
+        "403":
+          description: Forbidden - User lacks permission to delete the post
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Forbidden
+  /freelancers/communities/{communityId}/post/{postId}/comment/{commentId}:
+    delete:
+      summary: Delete a specific comment on a post in a community
+      description: Deletes a comment on a post identified by `postId` within the specified `communityId`. Requires JWT Bearer authentication. Only authorized users (e.g., post owner or community admin) can delete the post.
+      operationId: deleteCommunityPostComment
+      parameters:
+        - name: communityId
+          in: path
+          description: ID of the community containing the post
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: postId
+          in: path
+          description: ID of the post to delete
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: commentId
+          in: path
+          description: ID of the comment to delete
+          required: true
+          schema:
+            type: string
+            format: uuid
+      security:
+        - bearerAuth: []
+      responses:
+        "204":
+          description: Post deleted successfully
+        "401":
+          description: Unauthorized - Invalid or missing JWT token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Unauthorized
+        "403":
+          description: Forbidden - User lacks permission to delete the post
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Forbidden
 components:
   securitySchemes:
     bearerAuth:
@@ -329,6 +427,9 @@ components:
         isLiked:
           type: boolean
           description: Indicates if the current user has liked the post
+        canDelete:
+          type: boolean
+          description: Indicates if the current user can delete the post
         numberOfLikes:
           type: integer
           description: Total number of likes on the post
@@ -348,6 +449,7 @@ components:
         - numberOfLikes
         - numberOfComments
         - date
+        - canDelete
 
     # ---- Comment Data ----
     Comment:
