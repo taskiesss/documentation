@@ -332,6 +332,9 @@ components:
         numberOfLikes:
           type: integer
           description: Total number of likes on the post
+        numberOfComments:
+          type: integer
+          description: Total number of comments on the post
         date:
           type: string
           format: date-time
@@ -343,6 +346,7 @@ components:
         - postContent
         - isLiked
         - numberOfLikes
+        - numberOfComments
         - date
 
     # ---- Comment Data ----
