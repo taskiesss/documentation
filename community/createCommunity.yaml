@@ -14,10 +14,10 @@ paths:
             schema:
               type: object
               properties:
-                commityName:
+                communityName:
                   type: string
                   description: "Name of the community"
-                descirption:
+                description:
                   type: string
                   description: "Description of the community"
                 title:
@@ -63,8 +63,8 @@ paths:
                         type: string
                         description: "Description of the position"
               required:
-                - commityName
-                - descirption
+                - communityName
+                - description
                 - title
                 - pricePerHour
                 - avrgHoursPerWeek
