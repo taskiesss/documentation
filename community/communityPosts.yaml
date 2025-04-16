@@ -2,6 +2,7 @@ openapi: 3.0.0
 info:
   title: Freelancers Communities API
   version: "1.0"
+
 paths:
   /freelancers/communities/{communityId}/posts:
     get:
@@ -15,17 +16,14 @@ paths:
           required: true
           schema:
             type: string
-          description: ID of the community
         - in: query
           name: page
-          description: The page number to retrieve
           required: false
           schema:
             type: integer
             minimum: 0
         - in: query
           name: size
-          description: The number of records per page
           required: false
           schema:
             type: integer
@@ -44,48 +42,38 @@ paths:
                       $ref: "#/components/schemas/Post"
                   totalElements:
                     type: integer
-                    description: The total number of elements
                   totalPages:
                     type: integer
-                    description: The total number of pages
                   number:
                     type: integer
-                    description: The current page number
                   size:
                     type: integer
-                    description: The size of the page
         "401":
           description: Unauthorized - Invalid or missing JWT token
 
   /freelancers/communities/{communityId}/post/{postId}/post-comments:
     get:
       summary: Get paginated list of comments for a specific post
-      description: |
-        Retrieves a paginated list of comments belonging to the specified post.
-        The page and size parameters are used to control pagination.
+      description: Retrieves a paginated list of comments belonging to the specified post.
       parameters:
         - in: path
           name: communityId
           required: true
           schema:
             type: string
-          description: ID of the community
         - in: path
           name: postId
           required: true
           schema:
             type: string
-          description: ID of the post
         - in: query
           name: page
-          description: The page number to retrieve
           required: false
           schema:
             type: integer
             minimum: 0
         - in: query
           name: size
-          description: The number of records per page
           required: false
           schema:
             type: integer
@@ -104,25 +92,18 @@ paths:
                       $ref: "#/components/schemas/Comment"
                   totalElements:
                     type: integer
-                    description: The total number of elements
                   totalPages:
                     type: integer
-                    description: The total number of pages
                   number:
                     type: integer
-                    description: The current page number
                   size:
                     type: integer
-                    description: The size of the page
         "401":
           description: Unauthorized - Invalid or missing JWT token
 
   /freelancers/communities/{communityId}/post:
     post:
       summary: Create a new post in a specific community
-      description: |
-        Creates a new post within the given community.
-        Requires a valid JWT token and membership in the community.
       security:
         - bearerAuth: []
       parameters:
@@ -131,7 +112,6 @@ paths:
           required: true
           schema:
             type: string
-          description: ID of the community
       requestBody:
         required: true
         content:
@@ -149,9 +129,6 @@ paths:
   /freelancers/communities/{communityId}/post/{postId}/comment:
     post:
       summary: Add a comment to a post in a specific community
-      description: |
-        Creates a new comment on a post within the given community.
-        Requires a valid JWT token and membership in the community.
       security:
         - bearerAuth: []
       parameters:
@@ -160,13 +137,11 @@ paths:
           required: true
           schema:
             type: string
-          description: ID of the community
         - in: path
           name: postId
           required: true
           schema:
             type: string
-          description: ID of the post
       requestBody:
         required: true
         content:
@@ -176,7 +151,6 @@ paths:
               properties:
                 content:
                   type: string
-                  description: Content of the new comment
               required:
                 - content
       responses:
@@ -190,22 +164,18 @@ paths:
   /freelancers/communities/{communityId}/post/{postId}/likes:
     get:
       summary: Get list of freelancers who liked a post
-      description: Retrieves a list of freelancers who liked the specified post, including their ID, name, and profile picture.
       operationId: getPostLikes
       parameters:
         - name: communityId
           in: path
-          description: Unique identifier of the community
           required: true
           schema:
             type: string
         - name: postId
           in: path
-          description: Unique identifier of the post
           required: true
           schema:
             type: string
-
       security:
         - bearerAuth: []
       responses:
@@ -233,27 +203,24 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+
   /freelancers/communities/{communityId}/post/{postId}/likes/{liked}:
     post:
       summary: Like or unlike a post
-      description: Allows an authenticated freelancer to like or unlike a post based on the liked parameter.
       operationId: likePost
       parameters:
         - name: communityId
           in: path
-          description: Unique identifier of the community
           required: true
           schema:
             type: string
         - name: postId
           in: path
-          description: Unique identifier of the post
           required: true
           schema:
             type: string
         - name: liked
           in: path
-          description: Set to true to like the post, false to unlike it
           required: true
           schema:
             type: boolean
@@ -290,23 +257,20 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+
   /freelancers/communities/{communityId}/post/{postId}:
     delete:
       summary: Delete a specific post in a community
-      description: Deletes a post identified by `postId` within the specified `communityId`. Requires JWT Bearer authentication. Only authorized users (e.g., post owner or community admin) can delete the post.
       operationId: deleteCommunityPost
-
       parameters:
         - name: communityId
           in: path
-          description: ID of the community containing the post
           required: true
           schema:
             type: string
             format: uuid
         - name: postId
           in: path
-          description: ID of the post to delete
           required: true
           schema:
             type: string
@@ -317,48 +281,37 @@ paths:
         "204":
           description: Post deleted successfully
         "401":
-          description: Unauthorized - Invalid or missing JWT token
+          description: Unauthorized
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Unauthorized
+                $ref: "#/components/schemas/ErrorResponse"
         "403":
-          description: Forbidden - User lacks permission to delete the post
+          description: Forbidden
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Forbidden
+                $ref: "#/components/schemas/ErrorResponse"
+
   /freelancers/communities/{communityId}/post/{postId}/comment/{commentId}:
     delete:
-      summary: Delete a specific comment on a post in a community
-      description: Deletes a comment on a post identified by `postId` within the specified `communityId`. Requires JWT Bearer authentication. Only authorized users (e.g., post owner or community admin) can delete the post.
+      summary: Delete a specific comment on a post
       operationId: deleteCommunityPostComment
       parameters:
         - name: communityId
           in: path
-          description: ID of the community containing the post
           required: true
           schema:
             type: string
             format: uuid
         - name: postId
           in: path
-          description: ID of the post to delete
           required: true
           schema:
             type: string
             format: uuid
         - name: commentId
           in: path
-          description: ID of the comment to delete
           required: true
           schema:
             type: string
@@ -367,27 +320,20 @@ paths:
         - bearerAuth: []
       responses:
         "204":
-          description: Post deleted successfully
+          description: Comment deleted successfully
         "401":
-          description: Unauthorized - Invalid or missing JWT token
+          description: Unauthorized
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Unauthorized
+                $ref: "#/components/schemas/ErrorResponse"
         "403":
-          description: Forbidden - User lacks permission to delete the post
+          description: Forbidden
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Forbidden
+                $ref: "#/components/schemas/ErrorResponse"
+
 components:
   securitySchemes:
     bearerAuth:
@@ -396,133 +342,92 @@ components:
       bearerFormat: JWT
 
   schemas:
-    # ---- Post Data ----
     Post:
       type: object
       properties:
         postID:
           type: string
-          description: Unique identifier of the post
         postOwner:
-          type: object
-          properties:
-            freelancerName:
-              type: string
-              description: Name of the freelancer who owns the post
-            profilePicture:
-              type: string
-              description: URL/base64 string for the freelancer's profile picture
-            freelancerId:
-              type: string
-              description: Unique identifier of the freelancer
-          required:
-            - freelancerName
-            - freelancerId
+          $ref: "#/components/schemas/PostOwner"
         postTitle:
           type: string
-          description: Title of the post
         postContent:
           type: string
-          description: Main content of the post
         isLiked:
           type: boolean
-          description: Indicates if the current user has liked the post
         canDelete:
           type: boolean
-          description: Indicates if the current user can delete the post
         numberOfLikes:
           type: integer
-          description: Total number of likes on the post
         numberOfComments:
           type: integer
-          description: Total number of comments on the post
         date:
           type: string
           format: date-time
-          description: Date and time the post was created or published
       required:
         - postID
         - postOwner
         - postTitle
         - postContent
         - isLiked
+        - canDelete
         - numberOfLikes
         - numberOfComments
         - date
-        - canDelete
 
-    # ---- Comment Data ----
     Comment:
       type: object
       properties:
+        commentId:
+          type: string
         postOwner:
-          type: object
-          properties:
-            freelancerName:
-              type: string
-              description: Name of the freelancer who owns the comment
-            profilePicture:
-              type: string
-              description: URL/base64 string for the freelancer's profile picture
-            freelancerId:
-              type: string
-              description: Unique identifier of the freelancer
-          required:
-            - freelancerName
-            - freelancerId
+          $ref: "#/components/schemas/PostOwner"
+        content:
+          type: string
         date:
           type: string
           format: date-time
-          description: Date and time the comment was created
-        commentId:
-          type: string
-          description: Unique identifier for the comment
-        content:
-          type: string
-          description: Content of the comment
       required:
-        - postOwner
-        - date
         - commentId
+        - postOwner
         - content
+        - date
 
-    # ---- Create Post Request Body ----
+    PostOwner:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        profilePicture:
+          type: string
+        role:
+          type: string
+      required:
+        - id
+        - name
+        - profilePicture
+        - role
+
     CreatePostRequest:
       type: object
       properties:
         postTitle:
           type: string
-          description: Title of the new post
         postContent:
           type: string
-          description: Content of the new post
       required:
         - postTitle
         - postContent
-    Freelancer:
-      type: object
-      properties:
-        freelancerId:
-          type: string
-          description: Unique identifier of the freelancer
-        freelancerName:
-          type: string
-          description: Name of the freelancer
-        profilePic:
-          type: string
-          description: URL to the freelancer's profile picture
-          nullable: true
-      required:
-        - freelancerId
-        - freelancerName
+
     PostLikesResponse:
       type: object
       properties:
         likes:
           type: array
           items:
-            $ref: "#/components/schemas/Freelancer"
-
+            $ref: "#/components/schemas/PostOwner"
       required:
         - likes
 
@@ -531,14 +436,13 @@ components:
       properties:
         message:
           type: string
-          description: Success message (e.g., "Post liked successfully")
       required:
         - message
+
     ErrorResponse:
       type: object
       properties:
         error:
           type: string
-          description: Description of the error
       required:
         - error
