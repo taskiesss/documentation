@@ -34,20 +34,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  content:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/Post"
-                  totalElements:
-                    type: integer
-                  totalPages:
-                    type: integer
-                  number:
-                    type: integer
-                  size:
-                    type: integer
+                $ref: "#/components/schemas/PaginatedPostResponse"
         "401":
           description: Unauthorized - Invalid or missing JWT token
 
@@ -84,20 +71,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  content:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/Comment"
-                  totalElements:
-                    type: integer
-                  totalPages:
-                    type: integer
-                  number:
-                    type: integer
-                  size:
-                    type: integer
+                $ref: "#/components/schemas/PaginatedCommentResponse"
         "401":
           description: Unauthorized - Invalid or missing JWT token
 
@@ -368,7 +342,6 @@ components:
         - postTitle
         - postContent
         - isLiked
-        - canDelete
         - numberOfLikes
         - numberOfComments
         - date
@@ -444,3 +417,85 @@ components:
           type: string
       required:
         - error
+
+    Sort:
+      type: object
+      properties:
+        empty:
+          type: boolean
+        unsorted:
+          type: boolean
+        sorted:
+          type: boolean
+
+    Pageable:
+      type: object
+      properties:
+        pageNumber:
+          type: integer
+        pageSize:
+          type: integer
+        sort:
+          $ref: "#/components/schemas/Sort"
+        offset:
+          type: integer
+        unpaged:
+          type: boolean
+        paged:
+          type: boolean
+
+    PaginatedPostResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/Post"
+        pageable:
+          $ref: "#/components/schemas/Pageable"
+        last:
+          type: boolean
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+        size:
+          type: integer
+        number:
+          type: integer
+        sort:
+          $ref: "#/components/schemas/Sort"
+        numberOfElements:
+          type: integer
+        first:
+          type: boolean
+        empty:
+          type: boolean
+
+    PaginatedCommentResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/Comment"
+        pageable:
+          $ref: "#/components/schemas/Pageable"
+        last:
+          type: boolean
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+        size:
+          type: integer
+        number:
+          type: integer
+        sort:
+          $ref: "#/components/schemas/Sort"
+        numberOfElements:
+          type: integer
+        first:
+          type: boolean
+        empty:
+          type: boolean
