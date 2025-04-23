@@ -1,0 +1,70 @@
+openapi: 3.0.0
+info:
+  title: Clients API
+  version: 1.0.0
+paths:
+  /clients/my-jobs:
+    get:
+      summary: Get jobs posted by the client
+      description: for Frontend team -> if the client click on view proposals then the frontend should call the endpoint clients/my-Proposals  and put the job name in the request 
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Page number for pagination
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Number of items per page
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Search term to filter jobs
+      responses:
+        "200":
+          description: A list of client-posted jobs
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        jobName:
+                          type: string
+                        jobId:
+                          type: string
+                        postedAt:
+                          type: string
+                          format: date
+                        proposals:
+                          type: integer
+                        hired:
+                          type: integer
+                        contractId:
+                          type: string
+                  totalElements:
+                    type: integer
+                  totalPages:
+                    type: integer
+                  size:
+                    type: integer
+                  number:
+                    type: integer
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

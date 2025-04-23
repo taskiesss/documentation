@@ -1,0 +1,101 @@
+openapi: 3.0.0
+info:
+  title: Clients API
+  version: 1.0.0
+paths:
+  /clients/my-contracts:
+    post:
+      summary: Get client's contracts
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                search:
+                  type: string
+                  description: Search term to filter contracts
+                contractStatus:
+                  type: array
+                  items:
+                    type: string
+                    enum: [PENDING, REJECTED, ACTIVE, ENDED]
+                  description: List of contract statuses to filter by
+                page:
+                  type: integer
+                  description: Page number for pagination
+                size:
+                  type: integer
+                  description: Number of items per page
+                sortedBy:
+                  type: string
+                  enum: [DUE_DATE, TITLE, START_DATE]
+                  description: Field to sort by
+                sortDirection:
+                  type: string
+                  enum: [ASC, DESC]
+                  description: Sorting direction
+      responses:
+        "200":
+          description: A page of client contracts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        contractID:
+                          type: string
+                        jobID:
+                          type: string
+                        jobTitle:
+                          type: string
+                        freelancerName:
+                          type: string
+                        freelancerId:
+                          type: string
+                        contractStatus:
+                          type: string
+                          enum: [PENDING, REJECTED, ACTIVE, ENDED]
+                        budget:
+                          type: number
+                          format: double
+                        activeMilestone:
+                          type: string
+                        clientRateForFreelancer:
+                          type: number
+                          format: float
+                          minimum: 0
+                          maximum: 5
+                        startDate:
+                          type: string
+                          format: date
+                        dueDate:
+                          type: string
+                          format: date
+                        endDate:
+                          type: string
+                          description: Define the date of when the project ends (return present if still active or return date if ended)
+                          enum: [present, date]
+                          format: date
+                  totalElements:
+                    type: integer
+                  totalPages:
+                    type: integer
+                  size:
+                    type: integer
+                  number:
+                    type: integer
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

@@ -1,0 +1,124 @@
+openapi: 3.0.3
+info:
+  title: Client API
+  version: 1.0.0
+paths:
+  /api/clients/{id}:
+    get:
+      summary: Get client by ID
+      description: take care if id = my-profile then BACKEND -> fetch the client from the jwt token(check freelancer profile) & FRONTEND -> make the edits icons visible (check freelancer profile)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: UUID of the client
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  uuid:
+                    type: string
+                  name:
+                    type: string
+                  username:
+                    type: string
+                  country:
+                    type: string
+                  rate:
+                    type: integer
+                  skills:
+                    type: array
+                    items:
+                      type: string
+                  languages:
+                    type: array
+                    items:
+                      type: string
+                  description:
+                    type: string
+                  profilePicture:
+                    type: string
+                  coverPhoto:
+                    type: string
+                  completedJobs:
+                    type: integer
+                  totalSpent:
+                    type: number
+                    format: float
+
+  /api/clients/{id}/workdone:
+    get:
+      summary: Get work done by client
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: UUID of the client
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        jobName:
+                          type: string
+                        jobId:
+                          type: string
+                        rate:
+                          type: integer
+                        pricePerHour:
+                          type: number
+                        totalHours:
+                          type: number
+                  pageable:
+                    type: object
+                    properties:
+                      sort:
+                        type: object
+                        properties:
+                          unsorted:
+                            type: boolean
+                          sorted:
+                            type: boolean
+                          empty:
+                            type: boolean
+                      pageNumber:
+                        type: integer
+                      pageSize:
+                        type: integer
+                      offset:
+                        type: integer
+                      unpaged:
+                        type: boolean
+                  totalElements:
+                    type: integer
+                  totalPages:
+                    type: integer
+                  size:
+                    type: integer
+                  number:
+                    type: integer
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

@@ -1,0 +1,128 @@
+openapi: 3.0.0
+info:
+  title: My Proposals API
+  version: 1.0.0
+paths:
+  /api/my-proposals:
+    post:
+      summary: Get proposals submitted by the freelancer
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                page:
+                  type: integer
+                  description: Page number for pagination
+                size:
+                  type: integer
+                  description: Number of items per page
+                search:
+                  type: string
+                  description: Search term to filter proposals
+                status:
+                  type: array
+                  description: Filter by proposal status
+                  items:
+                    type: string
+                    enum: [PENDING, DECLINED, ACCEPTED, HIRED]
+      responses:
+        "200":
+          description: A page of proposals
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        proposalId:
+                          type: string
+                        freelancerName:
+                          type: string
+                        freelancerId:
+                          type: string
+                        profilePicture:
+                          type: string
+                        jobName:
+                          type: string
+                        jobId:
+                          type: string
+                        isCommunity:
+                          type: boolean
+                        status:
+                          type: string
+                          enum: [PENDING, DECLINED, ACCEPTED, HIRED]
+                        contractId:
+                          type: string
+                  totalElements:
+                    type: integer
+                  totalPages:
+                    type: integer
+                  size:
+                    type: integer
+                  number:
+                    type: integer
+
+  /clients/proposals/{proposalId}:
+    get:
+      summary: Get details of a specific proposal by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: proposalId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the proposal to retrieve
+      responses:
+        "200":
+          description: Proposal details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  proposalId:
+                    type: string
+                  jobName:
+                    type: string
+                  freelancerName:
+                    type: string
+                  freelancerId:
+                    type: string
+                  profilePicture:
+                    type: string
+                  isCommunity:
+                    type: boolean
+                  coverLetter:
+                    type: string
+                  pricePerHour:
+                    type: number
+                    format: double
+                  paymentMethod:
+                    type: string
+                    enum: [PerMilestones, PerProject]
+                  attachment:
+                    type: string
+                  date:
+                    type: string
+                    format: date
+                  status:
+                    type: string
+                    enum: [PENDING, DECLINED, ACCEPTED, HIRED]
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
