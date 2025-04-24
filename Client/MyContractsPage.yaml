@@ -61,6 +61,8 @@ paths:
                           type: string
                         freelancerId:
                           type: string
+                        isCommunity:
+                          type: boolean
                         clientName:
                           type: string
                         clientId:
