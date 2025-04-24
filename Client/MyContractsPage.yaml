@@ -61,15 +61,24 @@ paths:
                           type: string
                         freelancerId:
                           type: string
+                        clientName:
+                          type: string
+                        clientId:
+                          type: string
                         contractStatus:
                           type: string
-                          enum: [PENDING, REJECTED, ACTIVE, ENDED]
+                          enum: [dueDate,title,startDate]
                         budget:
                           type: number
                           format: double
                         activeMilestone:
                           type: string
                         clientRateForFreelancer:
+                          type: number
+                          format: float
+                          minimum: 0
+                          maximum: 5
+                        freelancerRateForClient:
                           type: number
                           format: float
                           minimum: 0
