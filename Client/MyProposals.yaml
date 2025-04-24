@@ -24,6 +24,9 @@ paths:
                 search:
                   type: string
                   description: Search term to filter proposals
+                jobId:
+                  type: string
+                  description: Filter by job ID
                 status:
                   type: array
                   description: Filter by proposal status
