@@ -6,7 +6,10 @@ paths:
   /api/clients/{id}:
     get:
       summary: Get client by ID
-      description: take care if id = my-profile then BACKEND -> fetch the client from the jwt token(check freelancer profile) & FRONTEND -> make the edits icons visible (check freelancer profile)
+      description: |
+        If id = "my-profile", then:
+        - BACKEND: Fetch the client from the JWT token (check freelancer profile).
+        - FRONTEND: Make the edit icons visible (check freelancer profile).
       parameters:
         - name: id
           in: path
@@ -64,6 +67,20 @@ paths:
           schema:
             type: string
           description: UUID of the client
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+          description: Page number (default is 0)
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+          description: Page size (default is 10)
       responses:
         '200':
           description: Successful response
