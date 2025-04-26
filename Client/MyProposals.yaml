@@ -123,9 +123,125 @@ paths:
                     type: string
                     enum: [PENDING, DECLINED, ACCEPTED, HIRED]
 
+  /api/proposals/{id}/milestones:
+    get:
+      summary: Get milestones of a specific proposal
+      description: Retrieves the list of milestones for a specific proposal with pagination.
+      operationId: getMyProposalMilestones
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the proposal to retrieve milestones for
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: true
+          description: The page number for paginated results (0-based, defaults to 0)
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - name: size
+          in: query
+          required: true
+          description: The number of items per page (defaults to 10)
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 100
+      responses:
+        "200":
+          description: Successful response with milestones details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageMilestone"
+        "401":
+          description: Unauthorized - Invalid or missing token
+        "404":
+          description: Proposal or milestones not found
+
 components:
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
+  schemas:
+    PageMilestone:
+      type: object
+      required:
+        - content
+        - totalElements
+        - totalPages
+        - size
+        - number
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/Milestone"
+        pageable:
+          type: object
+          properties:
+            sort:
+              type: object
+              properties:
+                unsorted:
+                  type: boolean
+                sorted:
+                  type: boolean
+                empty:
+                  type: boolean
+            pageNumber:
+              type: integer
+              format: int32
+            pageSize:
+              type: integer
+              format: int32
+            offset:
+              type: integer
+              format: int32
+            unpaged:
+              type: boolean
+        totalElements:
+          type: integer
+          format: int32
+        totalPages:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        number:
+          type: integer
+          format: int32
+    Milestone:
+      type: object
+      required:
+        - title
+        - description
+        - expectedHours
+        - dueDate
+        - status
+        - milestoneId
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        expectedHours:
+          type: number
+        dueDate:
+          type: string
+          format: date
+        status:
+          type: string
+          enum: [not_started, in_review, in_progress, approved]
+        milestoneId:
+          type: string
