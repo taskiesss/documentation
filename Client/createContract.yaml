@@ -48,6 +48,7 @@ paths:
                         format: double
                     required:
                       - title
+                      - milestoneNumber
                       - description
                       - dueDate
                       - expectedHours
