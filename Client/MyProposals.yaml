@@ -54,6 +54,8 @@ paths:
                           type: string
                         profilePicture:
                           type: string
+                        freelancerTitle:
+                          type: string
                         jobName:
                           type: string
                         jobId:
@@ -74,7 +76,7 @@ paths:
                   number:
                     type: integer
 
-  /clients/proposals/{proposalId}:
+  /api/proposals/{proposalId}:
     get:
       summary: Get details of a specific proposal by ID
       security:
