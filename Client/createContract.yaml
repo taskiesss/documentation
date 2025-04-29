@@ -59,7 +59,7 @@ paths:
                 - payment
                 - milestones
       responses:
-        '200':
+        "200":
           description: Contract created successfully
           content:
             application/json:
@@ -69,7 +69,7 @@ paths:
                   message:
                     type: string
                     enum: ["true"]
-        '404':
+        "404":
           description: Proposal ID not found
           content:
             application/json:

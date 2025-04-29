@@ -122,6 +122,8 @@ paths:
                   status:
                     type: string
                     enum: [PENDING, DECLINED, ACCEPTED, HIRED]
+                  TotalHours:
+                    type: number
 
   /api/proposals/{id}/milestones:
     get:
