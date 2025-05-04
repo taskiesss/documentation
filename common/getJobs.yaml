@@ -6,7 +6,7 @@ info:
 servers:
   - url: http://localhost:3000
 paths:
-  /freelancers/jobs/{id}:
+  /api/jobs/{id}:
     get:
       summary: Get Freelancer Job Details
       description: >
