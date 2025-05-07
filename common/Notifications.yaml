@@ -1,0 +1,146 @@
+openapi: 3.0.0
+info:
+  title: Notifications API
+  version: "1.0"
+
+paths:
+  /api/notifications:
+    get:
+      summary: Get paginated list of notifications
+      description: |
+        Retrieves a paginated list of user notifications.
+        The page and size parameters are used to control pagination.
+      parameters:
+        - in: query
+          name: page
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+        - in: query
+          name: size
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        "200":
+          description: Paginated response with notifications data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedNotificationResponse"
+        "401":
+          description: Unauthorized - Invalid or missing JWT token
+
+  /api/notifications/mark-as-read/{notificationId}:
+    post:
+      summary: Mark a notification as read
+      description: Marks the given notification as read.
+      parameters:
+        - in: path
+          name: notificationId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Notification marked as read
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SimpleResponse"
+        "404":
+          description: Notification not found
+
+components:
+  schemas:
+    NotificationResponseDTO:
+      type: object
+      properties:
+        notificationId:
+          type: string
+        content:
+          type: string
+        isRead:
+          type: boolean
+        type:
+          $ref: "#/components/schemas/NotificationDest"
+        routeId:
+          type: string
+      required:
+        - notificationId
+        - content
+        - isRead
+        - type
+        - routeId
+
+    Sort:
+      type: object
+      properties:
+        empty:
+          type: boolean
+        unsorted:
+          type: boolean
+        sorted:
+          type: boolean
+
+    Pageable:
+      type: object
+      properties:
+        pageNumber:
+          type: integer
+        pageSize:
+          type: integer
+        sort:
+          $ref: "#/components/schemas/Sort"
+        offset:
+          type: integer
+        unpaged:
+          type: boolean
+        paged:
+          type: boolean
+
+    PaginatedNotificationResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/NotificationResponseDTO"
+        pageable:
+          $ref: "#/components/schemas/Pageable"
+        last:
+          type: boolean
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+        size:
+          type: integer
+        number:
+          type: integer
+        sort:
+          $ref: "#/components/schemas/Sort"
+        numberOfElements:
+          type: integer
+        first:
+          type: boolean
+        empty:
+          type: boolean
+
+    SimpleResponse:
+      type: object
+      properties:
+        message:
+          type: string
+
+    NotificationDest:
+      type: string
+      enum:
+        - PROPOSAL
+        - CONTRACT
+        - COMMUNITY_PROFILE
+        - COMMUNITY_JOBS_AND_TALENTS
+        - COMMUNITY_POSTS
+        - COMMUNITY_SETTINGS
