@@ -172,6 +172,15 @@ components:
         name:
           type: string
           example: "John Doe"
+        role:
+          type: string
+          example: "CLIENT or FREELANCER "
+        newNotifications:
+          type: integer
+          example: 0
+        id: 
+          type: string
       required:
         - profilePicture
         - name
+        - role
