@@ -109,3 +109,6 @@ paths:
                   totalBalance:
                     type: number
                     example: 1000
+                  restrictedOrWorkInProgressBalance:
+                    type: number
+                    example: 1000
