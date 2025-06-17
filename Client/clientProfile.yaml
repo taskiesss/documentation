@@ -134,7 +134,7 @@ paths:
                   number:
                     type: integer
 
-  /api/clients/skills:
+  /clients/skills:
     patch:
       summary: Update client skills
       security:
@@ -162,7 +162,7 @@ paths:
         '404':
           description: Client not found
 
-  /api/clients/description:
+  /clients/description:
     patch:
       summary: Update client description
       security:
@@ -188,7 +188,7 @@ paths:
         '404':
           description: Client not found
 
-  /api/clients/profile-picture:
+  /clients/profile-picture:
     patch:
       summary: Update the client's profile picture
       description: Upload a new profile picture for a client.
