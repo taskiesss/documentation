@@ -133,6 +133,61 @@ paths:
                   number:
                     type: integer
 
+
+  /api/clients/skills:
+    patch:
+      summary: Update client skills
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                skills:
+                  type: array
+                  items:
+                    type: string
+              required:
+                - skills
+      responses:
+        '200':
+          description: Skills updated successfully
+        '400':
+          description: Invalid request body
+        '401':
+          description: Unauthorized
+        '404':
+          description: Client not found
+
+  /api/clients/description:
+    patch:
+      summary: Update client description
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+              required:
+                - description
+      responses:
+        '200':
+          description: Description updated successfully
+        '400':
+          description: Invalid request body
+        '401':
+          description: Unauthorized
+        '404':
+          description: Client not found
+
 components:
   securitySchemes:
     bearerAuth:
